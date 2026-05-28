@@ -1,0 +1,95 @@
+{
+    "thresholds": {
+        "maternal_health": {
+            "low": 50,
+            "moderate": 75,
+            "high": 75
+        },
+        "preeclampsia": {
+            "low": 40,
+            "moderate": 70,
+            "high": 85
+        }
+    },
+    "maternal_health": {
+        "low": {
+            "title": "✅ LOW RISK PREGNANCY",
+            "message": "Your maternal health assessment shows no high-risk indicators. Keep up the good work with regular prenatal care.",
+            "recommendations": [
+                "Continue regular prenatal checkups",
+                "Maintain balanced nutrition",
+                "Stay hydrated",
+                "Get adequate rest"
+            ]
+        },
+        "moderate": {
+            "title": "⚠️ MODERATE RISK PREGNANCY",
+            "message": "Some risk factors have been detected. Increased monitoring is recommended.",
+            "recommendations": [
+                "Increase prenatal visit frequency",
+                "Monitor blood pressure regularly",
+                "Track weight gain",
+                "Report any unusual symptoms immediately"
+            ]
+        },
+        "high": {
+            "title": "🚨 HIGH RISK PREGNANCY",
+            "message": "Elevated risk factors have been detected. Proceeding to detailed preeclampsia assessment...",
+            "recommendations": [
+                "Contact your healthcare provider immediately",
+                "Schedule urgent follow-up appointment",
+                "Monitor symptoms closely at home"
+            ],
+            "proceed_to_phase2": true
+        }
+    },
+    "preeclampsia": {
+        "low": {
+            "title": "✅ PREECLAMPSIA RISK: LOW",
+            "message": "Your assessment shows minimal indicators for preeclampsia. Continue routine prenatal care.",
+            "recommendations": [
+                "Continue routine prenatal care",
+                "Maintain healthy lifestyle",
+                "Regular blood pressure monitoring"
+            ]
+        },
+        "moderate": {
+            "title": "⚠️ PREECLAMPSIA RISK: MODERATE",
+            "message": "Some indicators suggest elevated risk. Close monitoring recommended.",
+            "do": [
+                "Monitor blood pressure closely",
+                "Reduce sodium intake",
+                "Increase water intake",
+                "Track symptoms daily"
+            ],
+            "dont": [
+                "Skip prenatal appointments",
+                "Consume high-salt foods",
+                "Ignore headaches or swelling"
+            ]
+        },
+        "high": {
+            "title": "🚨 HIGH RISK: PREECLAMPSIA DETECTED",
+            "message": "Your profile shows strong indicators for preeclampsia. Immediate medical attention recommended.",
+            "explanation": "Preeclampsia is a serious condition that affects blood pressure and organ function. Early detection and management are crucial for safe outcomes.",
+            "do": [
+                "Monitor blood pressure daily",
+                "Rest on your left side",
+                "Schedule immediate doctor follow-up",
+                "Keep a symptom diary"
+            ],
+            "dont": [
+                "Engage in strenuous exercise",
+                "Ignore severe headaches",
+                "Skip medication doses",
+                "Consume processed foods"
+            ],
+            "immediate_actions": [
+                "Contact your doctor within 24 hours",
+                "Consider getting a home blood pressure monitor",
+                "Watch for symptoms: severe headaches, vision changes, upper abdominal pain, swelling",
+                "Prepare for possible hospital monitoring"
+            ]
+        }
+    }
+}
