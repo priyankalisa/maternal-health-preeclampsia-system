@@ -2,29 +2,25 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Preeclampsia ML - Maternal Health Prediction</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet" />
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-
+    <script src="https://unpkg.com/lucide/dist/umd/lucide.js"></script>
     <style>
         body {
-            font-family: "Inter", sans-serif;
+            font-family: 'Inter', sans-serif;
             scroll-behavior: smooth;
         }
 
         .gradient-bg {
-            background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%);
+            background: linear-gradient(135deg, #0D9488 0%, #0284C7 100%);
         }
 
+        /* Animation classes */
         .fade-in-up {
             opacity: 0;
             transform: translateY(30px);
@@ -56,357 +52,631 @@
 </head>
 
 <body class="bg-gray-50">
-
-    <!-- Navbar -->
+    <!-- Apple-Style Navbar -->
     <nav class="fixed top-0 left-0 right-0 z-50 bg-white/70 backdrop-blur-xl border-b border-black/5">
-        <div class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
-
+        <div class="max-w-5xl mx-auto px-6 h-12 flex items-center justify-between">
             <!-- Logo -->
-            <a href="https://maternal-health-preeclampsia-system.onrender.com/" class="flex items-center gap-2 group">
-
+            <a href="https://maternal-health-preeclampsia-system.onrender.com/" class="flex items-center gap-1.5 group">
                 <div
-                    class="w-8 h-8 bg-gradient-to-br from-teal-500 to-sky-500 rounded-lg flex items-center justify-center">
-                    <i data-lucide="heart-pulse" class="w-4 h-4 text-white"></i>
+                    class="w-6 h-6 bg-gradient-to-br from-teal-500 to-sky-500 rounded-md flex items-center justify-center">
+                    <i data-lucide="heart-pulse" class="w-3.5 h-3.5 text-white"></i>
                 </div>
-
-                <span class="text-[15px] font-semibold text-gray-800 group-hover:text-gray-900 transition-colors">
-                    Preeclampsia
-                </span>
+                <span
+                    class="text-[15px] font-medium text-gray-800 group-hover:text-gray-900 transition-colors">Preeclampsia</span>
             </a>
 
-            <!-- Nav Links -->
-            <div class="hidden md:flex items-center gap-8">
-                <a href="#features" class="text-[13px] text-gray-500 hover:text-gray-900 transition-colors">
-                    Features
-                </a>
-
-                <a href="#how-it-works" class="text-[13px] text-gray-500 hover:text-gray-900 transition-colors">
-                    How It Works
-                </a>
-
-                <a href="#two-phase" class="text-[13px] text-gray-500 hover:text-gray-900 transition-colors">
-                    Two-Phase
-                </a>
-
-                <a href="#performance" class="text-[13px] text-gray-500 hover:text-gray-900 transition-colors">
-                    Performance
-                </a>
-
-                <a href="#pipeline" class="text-[13px] text-gray-500 hover:text-gray-900 transition-colors">
-                    Pipeline
-                </a>
-
-                <a href="#importance" class="text-[13px] text-gray-500 hover:text-gray-900 transition-colors">
-                    Importance
-                </a>
+            <!-- Nav Links - Apple Style -->
+            <div class="flex items-center gap-8">
+                <a href="#features" class="text-[13px] text-gray-500 hover:text-gray-900 transition-colors">Features</a>
+                <a href="#how-it-works" class="text-[13px] text-gray-500 hover:text-gray-900 transition-colors">How it
+                    Works</a>
+                <a href="#two-phase"
+                    class="text-[13px] text-gray-500 hover:text-gray-900 transition-colors">Two-Phase</a>
+                <a href="#performance"
+                    class="text-[13px] text-gray-500 hover:text-gray-900 transition-colors">Performance</a>
+                <a href="#pipeline"
+                    class="text-[13px] text-gray-500 hover:text-gray-900 transition-colors hidden md:inline">Pipeline</a>
+                <a href="#importance"
+                    class="text-[13px] text-gray-500 hover:text-gray-900 transition-colors hidden md:inline">Importance</a>
             </div>
 
-            <!-- Button -->
+            <!-- CTA Button - FIXED -->
             <a href="https://maternal-health-preeclampsia-system.onrender.com/" target="_blank"
-                class="bg-teal-600 hover:bg-teal-700 text-white px-5 py-2 rounded-lg text-sm font-medium transition-all shadow-md">
+                class="text-[13px] bg-teal-600 text-white px-4 py-1.5 rounded-full hover:bg-teal-700 transition-colors font-medium">
                 Get Started
             </a>
-
         </div>
     </nav>
 
-    <!-- Landing -->
+    <!-- Landing Content -->
     <main id="landing-content">
-
-        <!-- Hero -->
+        <!-- Section 1: Hero -->
         <section class="gradient-bg min-h-screen flex items-center relative overflow-hidden pt-20">
-
             <div class="absolute inset-0 opacity-30">
                 <img src="https://images.unsplash.com/photo-1584515933487-779824d29309?w=1920&q=90&fit=crop&auto=format"
-                    alt="Maternal Health" class="w-full h-full object-cover mix-blend-overlay" />
+                    alt="" class="w-full h-full object-cover mix-blend-overlay">
             </div>
-
             <div class="absolute inset-0 opacity-10">
                 <div class="absolute top-20 left-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
                 <div class="absolute bottom-20 right-10 w-96 h-96 bg-white rounded-full blur-3xl"></div>
             </div>
-
             <div class="container mx-auto px-6 py-20 relative z-10">
                 <div class="max-w-3xl">
-
                     <div
                         class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
                         <i data-lucide="heart-pulse" class="w-4 h-4 text-white"></i>
-                        <span class="text-white/90 text-sm font-medium">
-                            AI-Powered Maternal Health
-                        </span>
+                        <span class="text-white/90 text-sm font-medium">AI-Powered Maternal Health</span>
                     </div>
-
                     <h1 class="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
-                        Predict Preeclampsia<br />
-                        Before It Strikes
+                        Predict Preeclampsia<br>Before It Strikes
                     </h1>
-
                     <p class="text-xl text-white/80 mb-8 leading-relaxed">
-                        Our advanced machine learning system helps healthcare providers
-                        identify at-risk patients early, enabling proactive care and
-                        better outcomes for mothers and babies.
+                        Our advanced machine learning system helps healthcare providers identify
+                        at-risk patients early, enabling proactive care and better outcomes for
+                        mothers and babies.
                     </p>
-
                     <a href="https://maternal-health-preeclampsia-system.onrender.com/" target="_blank"
                         class="inline-flex items-center gap-2 bg-white text-teal-700 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-100 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-
                         <i data-lucide="arrow-right" class="w-5 h-5"></i>
                         Get Started
                     </a>
-
                     <div class="flex items-center gap-8 mt-12 text-white/70">
-
                         <div class="flex items-center gap-2">
                             <i data-lucide="award" class="w-5 h-5"></i>
                             <span class="text-sm">96.5% Accuracy</span>
                         </div>
-
                         <div class="flex items-center gap-2">
                             <i data-lucide="clock" class="w-5 h-5"></i>
                             <span class="text-sm">Instant Results</span>
                         </div>
-
                     </div>
                 </div>
             </div>
-
             <div class="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-gray-50 to-transparent"></div>
-
         </section>
 
-        <!-- Features -->
-        <section id="features" class="py-20 bg-gray-50">
-
+        <!-- Section 2: What is Preeclampsia? -->
+        <section class="py-20 bg-white">
             <div class="container mx-auto px-6">
-
-                <div class="text-center mb-16">
-
-                    <h2 class="text-4xl font-bold text-gray-900 mb-4">
-                        Key Features
-                    </h2>
-
-                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                        Our platform combines cutting-edge AI technology with clinical
-                        expertise.
-                    </p>
-
-                    <div class="w-24 h-1 bg-teal-600 mx-auto mt-6 rounded-full"></div>
-
+                <div class="max-w-4xl mx-auto">
+                    <div class="text-center mb-12">
+                        <h2 class="text-4xl font-bold text-gray-900 mb-4">What is Preeclampsia?</h2>
+                        <div class="w-24 h-1 bg-teal-600 mx-auto rounded-full"></div>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-12 items-center">
+                        <div>
+                            <p class="text-lg text-gray-600 leading-relaxed mb-6">
+                                Preeclampsia is a pregnancy complication characterized by high blood pressure
+                                and signs of damage to other organ systems, most commonly the liver and kidneys.
+                                It typically begins after 20 weeks of pregnancy in women whose blood pressure had
+                                previously been normal.
+                            </p>
+                            <p class="text-lg text-gray-600 leading-relaxed mb-6">
+                                If left untreated, preeclampsia can lead to serious complications for both
+                                mother and baby, including preterm birth and maternal death. Early detection
+                                is crucial for effective management and positive outcomes.
+                            </p>
+                            <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+                                <p class="text-red-800 font-medium">
+                                    <i data-lucide="alert-triangle" class="w-5 h-5 inline mr-2"></i>
+                                    Affects 5-8% of all pregnancies worldwide
+                                </p>
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1584515933487-779824d29309?w=600&h=400&fit=crop&auto=format&q=85"
+                                alt="Healthcare consultation" class="rounded-2xl shadow-2xl w-full h-80 object-cover"
+                                loading="lazy">
+                            <div
+                                class="absolute -bottom-6 -right-6 bg-teal-600 text-white px-6 py-4 rounded-xl shadow-lg">
+                                <div class="text-3xl font-bold">10,000+</div>
+                                <div class="text-sm opacity-80">Lives Saved Annually</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            </div>
+        </section>
 
+        <!-- Section 3: Key Features -->
+        <section id="features" class="py-20 bg-gray-50">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Key Features</h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                        Our platform combines cutting-edge AI technology with clinical expertise to
+                        deliver accurate, actionable predictions.
+                    </p>
+                    <div class="w-24 h-1 bg-teal-600 mx-auto mt-6 rounded-full"></div>
+                </div>
                 <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-
                     <div class="bg-white rounded-2xl p-8 shadow-lg card-hover fade-in-up">
-
                         <div class="w-14 h-14 bg-teal-100 rounded-xl flex items-center justify-center mb-6">
                             <i data-lucide="brain" class="w-7 h-7 text-teal-600"></i>
                         </div>
-
-                        <h3 class="text-xl font-semibold text-gray-900 mb-3">
-                            ML-Powered Predictions
-                        </h3>
-
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">ML-Powered Predictions</h3>
                         <p class="text-gray-600">
-                            Advanced models analyze multiple health indicators to generate
+                            Advanced ensemble models analyze multiple health indicators to generate
                             accurate risk assessments.
                         </p>
-
                     </div>
-
-                    <div class="bg-white rounded-2xl p-8 shadow-lg card-hover fade-in-up">
-
+                    <div class="bg-white rounded-2xl p-8 shadow-lg card-hover fade-in-up"
+                        style="animation-delay: 0.1s;">
                         <div class="w-14 h-14 bg-sky-100 rounded-xl flex items-center justify-center mb-6">
                             <i data-lucide="shield" class="w-7 h-7 text-sky-600"></i>
                         </div>
-
-                        <h3 class="text-xl font-semibold text-gray-900 mb-3">
-                            Two-Phase System
-                        </h3>
-
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Two-Phase System</h3>
                         <p class="text-gray-600">
-                            Maternal health and preeclampsia prediction in one unified
-                            platform.
+                            Comprehensive approach combining maternal health and preeclampsia
+                            detection in one unified system.
                         </p>
-
                     </div>
-
-                    <div class="bg-white rounded-2xl p-8 shadow-lg card-hover fade-in-up">
-
+                    <div class="bg-white rounded-2xl p-8 shadow-lg card-hover fade-in-up"
+                        style="animation-delay: 0.2s;">
                         <div class="w-14 h-14 bg-teal-100 rounded-xl flex items-center justify-center mb-6">
                             <i data-lucide="file-text" class="w-7 h-7 text-teal-600"></i>
                         </div>
-
-                        <h3 class="text-xl font-semibold text-gray-900 mb-3">
-                            Detailed Reports
-                        </h3>
-
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Detailed Reports</h3>
                         <p class="text-gray-600">
-                            Generate PDF reports with risk scores and clinical recommendations.
+                            Generate comprehensive PDF reports with risk scores, key factors,
+                            and clinical recommendations.
                         </p>
-
                     </div>
-
-                    <div class="bg-white rounded-2xl p-8 shadow-lg card-hover fade-in-up">
-
+                    <div class="bg-white rounded-2xl p-8 shadow-lg card-hover fade-in-up"
+                        style="animation-delay: 0.3s;">
                         <div class="w-14 h-14 bg-sky-100 rounded-xl flex items-center justify-center mb-6">
                             <i data-lucide="users" class="w-7 h-7 text-sky-600"></i>
                         </div>
-
-                        <h3 class="text-xl font-semibold text-gray-900 mb-3">
-                            Clinician-Friendly
-                        </h3>
-
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Clinician-Friendly</h3>
                         <p class="text-gray-600">
-                            Intuitive interface designed for healthcare professionals.
+                            Intuitive interface designed for healthcare professionals with
+                            no technical background required.
                         </p>
-
                     </div>
-
                 </div>
-
             </div>
-
         </section>
 
-        <!-- Footer -->
-        <footer class="bg-gray-900 text-white py-16">
-
+        <!-- Section 4: How It Works -->
+        <section id="how-it-works" class="py-20 bg-white">
             <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                        Get accurate predictions in just three simple steps
+                    </p>
+                    <div class="w-24 h-1 bg-teal-600 mx-auto mt-6 rounded-full"></div>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="text-center fade-in-up">
+                        <div class="relative inline-block mb-6">
+                            <div class="w-20 h-20 bg-teal-600 rounded-2xl flex items-center justify-center shadow-lg">
+                                <i data-lucide="clipboard-list" class="w-10 h-10 text-white"></i>
+                            </div>
+                            <div
+                                class="absolute -top-2 -right-2 w-8 h-8 bg-sky-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                                1</div>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Enter Patient Data</h3>
+                        <p class="text-gray-600 max-w-xs mx-auto">
+                            Input essential health metrics including blood pressure, age,
+                            and pregnancy history.
+                        </p>
+                    </div>
+                    <div class="text-center fade-in-up" style="animation-delay: 0.2s;">
+                        <div class="relative inline-block mb-6">
+                            <div class="w-20 h-20 bg-teal-600 rounded-2xl flex items-center justify-center shadow-lg">
+                                <i data-lucide="cpu" class="w-10 h-10 text-white"></i>
+                            </div>
+                            <div
+                                class="absolute -top-2 -right-2 w-8 h-8 bg-sky-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                                2</div>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">AI Analysis</h3>
+                        <p class="text-gray-600 max-w-xs mx-auto">
+                            Our models process the data through sophisticated algorithms
+                            to assess risk levels.
+                        </p>
+                    </div>
+                    <div class="text-center fade-in-up" style="animation-delay: 0.4s;">
+                        <div class="relative inline-block mb-6">
+                            <div class="w-20 h-20 bg-teal-600 rounded-2xl flex items-center justify-center shadow-lg">
+                                <i data-lucide="check-circle" class="w-10 h-10 text-white"></i>
+                            </div>
+                            <div
+                                class="absolute -top-2 -right-2 w-8 h-8 bg-sky-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                                3</div>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Get Results</h3>
+                        <p class="text-gray-600 max-w-xs mx-auto">
+                            Receive instant predictions with risk levels and actionable
+                            clinical recommendations.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
+        <!-- Section 5: Two-Phase System -->
+        <section id="two-phase" class="py-20 bg-gray-50">
+            <div class="container mx-auto px-6">
+                <div class="max-w-4xl mx-auto">
+                    <div class="text-center mb-12">
+                        <h2 class="text-4xl font-bold text-gray-900 mb-4">Two-Phase System</h2>
+                        <div class="w-24 h-1 bg-teal-600 mx-auto rounded-full"></div>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="bg-white rounded-2xl p-8 shadow-lg border-t-4 border-teal-600">
+                            <div class="flex items-center gap-4 mb-6">
+                                <div class="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center">
+                                    <i data-lucide="heart" class="w-6 h-6 text-teal-600"></i>
+                                </div>
+                                <h3 class="text-2xl font-bold text-gray-900">Phase 1: Maternal Health</h3>
+                            </div>
+                            <p class="text-gray-600 mb-6">
+                                The first phase assesses overall maternal health status using a comprehensive
+                                Random Forest model trained on the UCI Maternal Health dataset.
+                            </p>
+                            <ul class="space-y-3">
+                                <li class="flex items-center gap-3 text-gray-600">
+                                    <i data-lucide="check" class="w-5 h-5 text-teal-600"></i>
+                                    <span>Classifies into Low, Mid, and High risk categories</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-600">
+                                    <i data-lucide="check" class="w-5 h-5 text-teal-600"></i>
+                                    <span>Uses 6 key health indicators</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-600">
+                                    <i data-lucide="check" class="w-5 h-5 text-teal-600"></i>
+                                    <span>94% overall accuracy</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="bg-white rounded-2xl p-8 shadow-lg border-t-4 border-sky-600">
+                            <div class="flex items-center gap-4 mb-6">
+                                <div class="w-12 h-12 bg-sky-100 rounded-xl flex items-center justify-center">
+                                    <i data-lucide="activity" class="w-6 h-6 text-sky-600"></i>
+                                </div>
+                                <h3 class="text-2xl font-bold text-gray-900">Phase 2: Preeclampsia</h3>
+                            </div>
+                            <p class="text-gray-600 mb-6">
+                                The second phase specifically detects preeclampsia risk using a specialized
+                                machine learning model.
+                            </p>
+                            <ul class="space-y-3">
+                                <li class="flex items-center gap-3 text-gray-600">
+                                    <i data-lucide="check" class="w-5 h-5 text-sky-600"></i>
+                                    <span>Binary classification: Risk vs No Risk</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-600">
+                                    <i data-lucide="check" class="w-5 h-5 text-sky-600"></i>
+                                    <span>96.5% accuracy with Random Forest</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-600">
+                                    <i data-lucide="check" class="w-5 h-5 text-sky-600"></i>
+                                    <span>Early intervention enablement</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: Model Performance -->
+        <section id="performance" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="max-w-3xl mx-auto">
+                    <div class="text-center mb-12">
+                        <h2 class="text-4xl font-bold text-gray-900 mb-4">Model Performance</h2>
+                        <p class="text-xl text-gray-600">
+                            Comparison of machine learning algorithms
+                        </p>
+                        <div class="w-24 h-1 bg-teal-600 mx-auto mt-6 rounded-full"></div>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                        <table class="w-full">
+                            <thead class="bg-gray-900 text-white">
+                                <tr>
+                                    <th class="px-6 py-4 text-left font-semibold">Model</th>
+                                    <th class="px-6 py-4 text-left font-semibold">Accuracy</th>
+                                    <th class="px-6 py-4 text-left font-semibold">Cross-Validation</th>
+                                    <th class="px-6 py-4 text-left font-semibold">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-gray-100">
+                                    <td class="px-6 py-4 text-gray-900 font-medium">Random Forest</td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <span class="text-2xl font-bold text-teal-600">96.5%</span>
+                                            <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                                <div class="h-full bg-teal-600 rounded-full progress-bar"
+                                                    style="width: 96.5%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-lg font-semibold text-teal-600">96.4%</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="inline-flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
+                                            <i data-lucide="check-circle" class="w-4 h-4"></i>
+                                            Primary Model
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr class="border-b border-gray-100">
+                                    <td class="px-6 py-4 text-gray-900 font-medium">Decision Tree</td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <span class="text-2xl font-bold text-sky-600">93.0%</span>
+                                            <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                                <div class="h-full bg-sky-600 rounded-full progress-bar"
+                                                    style="width: 93%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-lg font-semibold text-sky-600">92.6%</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="inline-flex items-center gap-1 bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
+                                            <i data-lucide="bar-chart-2" class="w-4 h-4"></i>
+                                            Secondary
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 text-gray-900 font-medium">Logistic Regression</td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <span class="text-2xl font-bold text-gray-600">80.5%</span>
+                                            <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                                <div class="h-full bg-gray-400 rounded-full progress-bar"
+                                                    style="width: 80.5%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-lg font-semibold text-gray-600">78.7%</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="inline-flex items-center gap-1 bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm font-medium">
+                                            <i data-lucide="info" class="w-4 h-4"></i>
+                                            Baseline
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 7: Data Pipeline -->
+        <section id="pipeline" class="py-20 bg-gray-50">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">How It's Made</h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                        Our rigorous data processing pipeline ensures accurate, reliable predictions
+                    </p>
+                    <div class="w-24 h-1 bg-teal-600 mx-auto mt-6 rounded-full"></div>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-white rounded-xl p-6 shadow-md fade-in-up">
+                        <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
+                            <i data-lucide="sparkles" class="w-6 h-6 text-red-600"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Data Cleaning</h3>
+                        <p class="text-gray-600 text-sm">
+                            Removal of duplicates, handling outliers, and ensuring data quality
+                            across all datasets.
+                        </p>
+                    </div>
+                    <div class="bg-white rounded-xl p-6 shadow-md fade-in-up" style="animation-delay: 0.1s;">
+                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                            <i data-lucide="settings-2" class="w-6 h-6 text-purple-600"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Feature Engineering</h3>
+                        <p class="text-gray-600 text-sm">
+                            Creating derived features, normalization, and encoding categorical
+                            variables for optimal model performance.
+                        </p>
+                    </div>
+                    <div class="bg-white rounded-xl p-6 shadow-md fade-in-up" style="animation-delay: 0.2s;">
+                        <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center mb-4">
+                            <i data-lucide="package" class="w-6 h-6 text-amber-600"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Imputation</h3>
+                        <p class="text-gray-600 text-sm">
+                            Strategic handling of missing values using median imputation
+                            to maintain dataset integrity.
+                        </p>
+                    </div>
+                    <div class="bg-white rounded-xl p-6 shadow-md fade-in-up" style="animation-delay: 0.3s;">
+                        <div class="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center mb-4">
+                            <i data-lucide="filter" class="w-6 h-6 text-teal-600"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Domain Filtering</h3>
+                        <p class="text-gray-600 text-sm">
+                            Expert validation and filtering to ensure clinical relevance
+                            and accuracy of all features.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 8: Feature Importance -->
+        <section id="importance" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="max-w-3xl mx-auto">
+                    <div class="text-center mb-12">
+                        <h2 class="text-4xl font-bold text-gray-900 mb-4">Feature Importance</h2>
+                        <p class="text-xl text-gray-600">
+                            Key factors influencing prediction accuracy
+                        </p>
+                        <div class="w-24 h-1 bg-teal-600 mx-auto mt-6 rounded-full"></div>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="fade-in-up">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium text-gray-900">Systolic BP</span>
+                                <span class="text-teal-600 font-semibold">100%</span>
+                            </div>
+                            <div class="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-teal-500 to-teal-600 rounded-full progress-bar"
+                                    style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div class="fade-in-up" style="animation-delay: 0.1s;">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium text-gray-900">Diastolic BP</span>
+                                <span class="text-teal-600 font-semibold">92%</span>
+                            </div>
+                            <div class="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-teal-500 to-teal-600 rounded-full progress-bar"
+                                    style="width: 92%"></div>
+                            </div>
+                        </div>
+                        <div class="fade-in-up" style="animation-delay: 0.2s;">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium text-gray-900">Age</span>
+                                <span class="text-sky-600 font-semibold">78%</span>
+                            </div>
+                            <div class="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-sky-500 to-sky-600 rounded-full progress-bar"
+                                    style="width: 78%"></div>
+                            </div>
+                        </div>
+                        <div class="fade-in-up" style="animation-delay: 0.3s;">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium text-gray-900">Blood Sugar</span>
+                                <span class="text-sky-600 font-semibold">65%</span>
+                            </div>
+                            <div class="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-sky-500 to-sky-600 rounded-full progress-bar"
+                                    style="width: 65%"></div>
+                            </div>
+                        </div>
+                        <div class="fade-in-up" style="animation-delay: 0.4s;">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium text-gray-900">Body Temperature</span>
+                                <span class="text-gray-600 font-semibold">45%</span>
+                            </div>
+                            <div class="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-gray-400 to-gray-500 rounded-full progress-bar"
+                                    style="width: 45%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 9: CTA -->
+        <section class="gradient-bg py-20">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-4xl font-bold text-white mb-6">Ready to Transform Maternal Care?</h2>
+                <p class="text-xl text-white/80 max-w-2xl mx-auto mb-10">
+                    Join healthcare providers worldwide using Preeclampsia ML to detect
+                    preeclampsia early and save lives.
+                </p>
+                <a href="https://maternal-health-preeclampsia-system.onrender.com/" target="_blank"
+                    class="inline-flex items-center gap-3 bg-white text-teal-700 px-10 py-5 rounded-xl font-semibold text-xl hover:bg-gray-100 transition-all shadow-2xl hover:shadow-3xl transform hover:-translate-y-2">
+                    <i data-lucide="rocket" class="w-6 h-6"></i>
+                    Start Assessment Now
+                </a>
+            </div>
+        </section>
+
+        <!-- Section 10: Footer -->
+        <footer class="bg-gray-900 text-white py-16">
+            <div class="container mx-auto px-6">
                 <div class="grid md:grid-cols-4 gap-10 mb-12">
-
                     <div>
-
                         <div class="flex items-center gap-3 mb-6">
-
                             <div class="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center">
                                 <i data-lucide="heart-pulse" class="w-6 h-6 text-white"></i>
                             </div>
-
-                            <span class="text-xl font-bold">
-                                Preeclampsia ML
-                            </span>
-
+                            <span class="text-xl font-bold">Preeclampsia ML</span>
                         </div>
-
                         <p class="text-gray-400">
-                            AI-powered prediction system for maternal health and
-                            preeclampsia detection.
+                            AI-powered prediction system for maternal health and preeclampsia detection.
                         </p>
-
                     </div>
-
                     <div>
-
-                        <h4 class="font-semibold text-lg mb-4">
-                            Product
-                        </h4>
-
+                        <h4 class="font-semibold text-lg mb-4">Product</h4>
                         <ul class="space-y-3 text-gray-400">
-                            <li><a href="#" class="hover:text-white transition-colors">Features</a></li>
-                            <li><a href="#" class="hover:text-white transition-colors">How It Works</a></li>
-                            <li><a href="#" class="hover:text-white transition-colors">Pricing</a></li>
+                            <li><a href="#features" class="hover:text-white transition-colors">Features</a></li>
+                            <li><a href="#how-it-works" class="hover:text-white transition-colors">How It Works</a></li>
+                            <li><a href="#performance" class="hover:text-white transition-colors">Performance</a></li>
                         </ul>
-
                     </div>
-
                     <div>
-
-                        <h4 class="font-semibold text-lg mb-4">
-                            Resources
-                        </h4>
-
+                        <h4 class="font-semibold text-lg mb-4">Resources</h4>
                         <ul class="space-y-3 text-gray-400">
                             <li><a href="#" class="hover:text-white transition-colors">Documentation</a></li>
                             <li><a href="#" class="hover:text-white transition-colors">Research</a></li>
                             <li><a href="#" class="hover:text-white transition-colors">API</a></li>
                         </ul>
-
                     </div>
-
                     <div>
-
-                        <h4 class="font-semibold text-lg mb-4">
-                            Contact
-                        </h4>
-
+                        <h4 class="font-semibold text-lg mb-4">Contact</h4>
                         <ul class="space-y-3 text-gray-400">
-
                             <li class="flex items-center gap-2">
                                 <i data-lucide="mail" class="w-4 h-4"></i>
                                 <span>support@preeclampsia.com</span>
                             </li>
-
                             <li class="flex items-center gap-2">
                                 <i data-lucide="phone" class="w-4 h-4"></i>
                                 <span>+1 (555) 123-4567</span>
                             </li>
-
                         </ul>
-
                     </div>
-
                 </div>
-
                 <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-
                     <p class="text-gray-400 text-sm">
-                        © 2026 Preeclampsia ML. All rights reserved.
+                        &copy; 2026 Preeclampsia ML. All rights reserved.
                     </p>
-
                     <div class="flex items-center gap-6">
-
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <a href="#" aria-label="Twitter" class="text-gray-400 hover:text-white transition-colors">
                             <i data-lucide="twitter" class="w-5 h-5"></i>
                         </a>
-
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <a href="#" aria-label="LinkedIn" class="text-gray-400 hover:text-white transition-colors">
                             <i data-lucide="linkedin" class="w-5 h-5"></i>
                         </a>
-
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <a href="#" aria-label="GitHub" class="text-gray-400 hover:text-white transition-colors">
                             <i data-lucide="github" class="w-5 h-5"></i>
                         </a>
-
                     </div>
-
                 </div>
-
             </div>
-
         </footer>
-
     </main>
 
     <script>
-
-        // Lucide Icons
+        // Initialize icons
         lucide.createIcons();
 
-        // Scroll Animation
-        const observerOptions = {
-            threshold: 0.1
-        };
-
+        // Scroll observer for animations
+        const observerOptions = { threshold: 0.1 };
         const observer = new IntersectionObserver((entries) => {
-
             entries.forEach(entry => {
-
                 if (entry.isIntersecting) {
-                    entry.target.classList.add("is-visible");
+                    entry.target.classList.add('is-visible');
                 }
-
             });
-
         }, observerOptions);
 
-        document.querySelectorAll(".fade-in-up").forEach((el) => {
-            observer.observe(el);
-        });
-
+        document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
     </script>
-
 </body>
 
 </html>
