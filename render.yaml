@@ -2,5 +2,5 @@ services:
   - type: web
     name: maternal-health-app
     env: python
-    buildCommand: pip install -r requirements.txt
+    buildCommand: uv sync
     startCommand: streamlit run app/app.py --server.port $PORT --server.address 0.0.0.0
