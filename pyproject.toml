@@ -1,14 +1,14 @@
 [project]
 name = "prediction-of-preeclampsia"
 version = "0.1.0"
-description = "Preeclampsia prediction system using ML"
+description = "Preeclampsia prediction system"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11,<3.12"
 
 dependencies = [
-    "streamlit==1.36.0",
+    "streamlit==1.41.1",
     "pandas==2.2.2",
-    "numpy==1.24.4",
-    "scikit-learn==1.2.2",
-    "joblib==1.3.2"
+    "numpy==2.0.2",
+    "scikit-learn==1.6.1",
+    "joblib==1.5.3",
 ]
