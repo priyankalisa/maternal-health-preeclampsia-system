@@ -11,6 +11,7 @@ import pandas as pd
 import json
 import joblib
 from pathlib import Path
+from chatbot import get_chatbot_response
 
 # ============================================================================
 # CONFIGURATION
@@ -281,3 +282,52 @@ elif st.session_state.phase == 2:
             st.markdown("### 🚨 IMMEDIATE ACTIONS")
             for i, a in enumerate(advice["immediate_actions"], 1):
                 st.markdown(f"{i}. {a}")
+# ============================================================================
+# AI CHATBOT
+# ============================================================================
+
+st.markdown("---")
+st.header("🤖 Maternal Health AI Assistant")
+
+# Initialize chat history
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# Display previous messages
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# Chat input
+user_question = st.chat_input(
+    "Ask about pregnancy, maternal health, or preeclampsia..."
+)
+
+if user_question:
+
+    # Show user message
+    st.session_state.messages.append(
+        {"role": "user", "content": user_question}
+    )
+
+    with st.chat_message("user"):
+        st.markdown(user_question)
+
+    # Generate AI response
+    with st.chat_message("assistant"):
+        with st.spinner("Thinking..."):
+
+            try:
+                answer = get_chatbot_response(user_question)
+
+                st.markdown(answer)
+
+                st.session_state.messages.append(
+                    {
+                        "role": "assistant",
+                        "content": answer
+                    }
+                )
+
+            except Exception as e:
+                st.error(f"Error: {e}")
