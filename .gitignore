@@ -12,3 +12,9 @@ venv/
 
 # Jupyter
 .ipynb_checkpoints/
+
+# Streamlit Secrets
+.streamlit/secrets.toml
+
+# Environment Variables
+.env
