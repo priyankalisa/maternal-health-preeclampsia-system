@@ -1,8 +1,6 @@
-import streamlit as st
 import os
 import google.generativeai as genai
 
-# Load API key safely (works locally + Render)
 api_key = os.getenv("GEMINI_API_KEY")
 
 genai.configure(api_key=api_key)
@@ -10,22 +8,29 @@ genai.configure(api_key=api_key)
 model = genai.GenerativeModel("gemini-2.5-flash")
 
 
-def get_chatbot_response(user_query):
+def get_chatbot_response(user_query, chat_history):
+
+    # Convert chat history into readable context
+    history_text = ""
+
+    for msg in chat_history:
+        role = "User" if msg["role"] == "user" else "Assistant"
+        history_text += f"{role}: {msg['content']}\n"
 
     prompt = f"""
 You are a Maternal Health AI Assistant.
 
 Rules:
-- Answer only maternal health, pregnancy, prenatal care,
-  blood pressure, nutrition, and preeclampsia questions.
-- Use simple and easy language.
+- Answer only maternal health topics (pregnancy, BP, preeclampsia, nutrition).
 - Keep answers under 150 words.
-- Never provide a medical diagnosis.
-- Encourage consultation with healthcare professionals.
-- If the question is unrelated to maternal health,
-  politely refuse.
+- Be simple and safe.
+- If unrelated, refuse politely.
+- Never diagnose.
 
-Question:
+Conversation history:
+{history_text}
+
+Current user question:
 {user_query}
 """
 

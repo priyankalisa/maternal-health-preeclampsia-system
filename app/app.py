@@ -328,7 +328,7 @@ if user_question:
         with st.spinner("Thinking... 🤔"):
 
             try:
-                answer = get_chatbot_response(user_question)
+                answer = get_chatbot_response(user_question, st.session_state.messages)
 
                 st.markdown(answer)
 
