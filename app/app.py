@@ -283,7 +283,7 @@ elif st.session_state.phase == 2:
             for i, a in enumerate(advice["immediate_actions"], 1):
                 st.markdown(f"{i}. {a}")
 # ============================================================================
-# AI CHATBOT
+# AI CHATBOT (ChatGPT-style UI)
 # ============================================================================
 
 st.markdown("---")
@@ -293,19 +293,29 @@ st.header("🤖 Maternal Health AI Assistant")
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Display previous messages
+# -----------------------------
+# Clear Chat Button (NEW)
+# -----------------------------
+if st.button("🧹 Clear Chat"):
+    st.session_state.messages = []
+
+# -----------------------------
+# Display chat history
+# -----------------------------
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# Chat input
+# -----------------------------
+# Chat input (ChatGPT style)
+# -----------------------------
 user_question = st.chat_input(
     "Ask about pregnancy, maternal health, or preeclampsia..."
 )
 
 if user_question:
 
-    # Show user message
+    # Show + store user message
     st.session_state.messages.append(
         {"role": "user", "content": user_question}
     )
@@ -313,21 +323,25 @@ if user_question:
     with st.chat_message("user"):
         st.markdown(user_question)
 
-    # Generate AI response
+    # Assistant response
     with st.chat_message("assistant"):
-        with st.spinner("Thinking..."):
+        with st.spinner("Thinking... 🤔"):
 
             try:
                 answer = get_chatbot_response(user_question)
 
                 st.markdown(answer)
 
+                # Save assistant response
                 st.session_state.messages.append(
-                    {
-                        "role": "assistant",
-                        "content": answer
-                    }
+                    {"role": "assistant", "content": answer}
                 )
 
             except Exception as e:
-                st.error(f"Error: {e}")
+                error_msg = "Sorry, something went wrong. Please try again."
+
+                st.error(error_msg)
+
+                st.session_state.messages.append(
+                    {"role": "assistant", "content": error_msg}
+                )
