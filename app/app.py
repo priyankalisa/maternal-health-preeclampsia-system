@@ -282,81 +282,90 @@ elif st.session_state.phase == 2:
             st.markdown("### 🚨 IMMEDIATE ACTIONS")
             for i, a in enumerate(advice["immediate_actions"], 1):
                 st.markdown(f"{i}. {a}")
-# ============================================================================
-# AI CHATBOT (ChatGPT-style UI + Safety + Memory)
-# ============================================================================
-
 import streamlit as st
 from chatbot import get_chatbot_response, check_medical_emergency
 
-st.markdown("---")
-st.header("🤖 Maternal Health AI Assistant")
+st.set_page_config(page_title="Maternal Health AI", page_icon="🤰", layout="wide")
 
-# -----------------------------
-# Initialize chat history
-# -----------------------------
+# ============================================================================
+# SIDEBAR (NEW - Dashboard Style)
+# ============================================================================
+with st.sidebar:
+    st.title("🤰 Health Dashboard")
+
+    st.markdown("### ⚠️ Emergency Symptoms")
+    st.write("""
+    - Severe headache  
+    - Blurred vision  
+    - High BP  
+    - Chest pain  
+    - Reduced fetal movement  
+    """)
+
+    st.markdown("---")
+
+    st.markdown("### 💡 Pregnancy Tips")
+    st.write("""
+    - Stay hydrated  
+    - Regular BP monitoring  
+    - Balanced diet  
+    - Regular checkups  
+    """)
+
+    st.markdown("---")
+    st.info("This AI is not a medical diagnosis tool.")
+
+# ============================================================================
+# MAIN UI HEADER
+# ============================================================================
+st.markdown("<h1 style='text-align:center;'>🤖 Maternal Health AI Assistant</h1>", unsafe_allow_html=True)
+
+st.markdown("---")
+
+# ============================================================================
+# CHAT STATE
+# ============================================================================
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# -----------------------------
-# Clear Chat Button
-# -----------------------------
+# Clear chat
 if st.button("🧹 Clear Chat"):
     st.session_state.messages = []
 
-# -----------------------------
-# Display chat history
-# -----------------------------
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+# ============================================================================
+# CHAT CONTAINER (GLASS STYLE)
+# ============================================================================
+chat_container = st.container()
 
-# -----------------------------
-# Chat input
-# -----------------------------
-user_question = st.chat_input(
-    "Ask about pregnancy, maternal health, or preeclampsia..."
-)
+with chat_container:
+
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+# ============================================================================
+# INPUT BOX
+# ============================================================================
+user_question = st.chat_input("Ask about pregnancy, BP, preeclampsia...")
 
 if user_question:
 
-    # Save + show user message
-    st.session_state.messages.append(
-        {"role": "user", "content": user_question}
-    )
+    st.session_state.messages.append({"role": "user", "content": user_question})
 
     with st.chat_message("user"):
         st.markdown(user_question)
 
-    # -----------------------------
-    # ⚠️ Medical Emergency Check
-    # -----------------------------
+    # Emergency check
     is_emergency = check_medical_emergency(user_question)
 
     if is_emergency:
-        st.error("⚠️ Warning: This may indicate a serious medical condition. Please consult a doctor immediately.")
+        st.error("⚠️ Emergency detected! Please consult a doctor immediately.")
 
-    # -----------------------------
-    # AI Response
-    # -----------------------------
     with st.chat_message("assistant"):
-        with st.spinner("Thinking... 🤔"):
+        with st.spinner("Analyzing health query... 🤔"):
 
-            try:
-                answer = get_chatbot_response(user_question, st.session_state.messages)
+            answer = get_chatbot_response(user_question, st.session_state.messages)
 
-                st.markdown(answer)
+            st.markdown(answer)
 
-                # Save assistant response
-                st.session_state.messages.append(
-                    {"role": "assistant", "content": answer}
-                )
-
-            except Exception:
-                error_msg = "Sorry, something went wrong. Please try again."
-
-                st.error(error_msg)
-
-                st.session_state.messages.append(
-                    {"role": "assistant", "content": error_msg}
-                )
+    st.session_state.messages.append({"role": "assistant", "content": answer})
