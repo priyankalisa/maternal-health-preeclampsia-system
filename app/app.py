@@ -11,7 +11,7 @@ import pandas as pd
 import json
 import joblib
 from pathlib import Path
-from chatbot import get_chatbot_response
+from chatbot import get_chatbot_response, check_medical_emergency
 
 # ============================================================================
 # CONFIGURATION
@@ -20,6 +20,15 @@ from chatbot import get_chatbot_response
 CONFIG_PATH = Path(__file__).parent / "doctor_advice.json"
 # Path to the trained ML models
 MODELS_PATH = Path(__file__).parent / "models"
+
+# ============================================================================
+# MUST BE FIRST STREAMLIT COMMAND
+# ============================================================================
+st.set_page_config(
+    page_title="Maternal Health Assessment",
+    page_icon="🏥",
+    layout="wide"
+)
 
 # ============================================================================
 # HELPER FUNCTIONS
@@ -69,23 +78,35 @@ def load_model(name):
     return joblib.load(MODELS_PATH / f"{name}.pkl")
 
 # ============================================================================
+# SIDEBAR (Dashboard)
+# ============================================================================
+with st.sidebar:
+    st.title("🤰 Health Dashboard")
+
+    st.markdown("### ⚠️ Emergency Symptoms")
+    st.write("""
+    - Severe headache  
+    - Blurred vision  
+    - High BP  
+    - Chest pain  
+    - Reduced fetal movement  
+    """)
+
+    st.markdown("---")
+
+    st.markdown("### 💡 Pregnancy Tips")
+    st.write("""
+    - Stay hydrated  
+    - Regular BP monitoring  
+    - Balanced diet  
+    - Regular checkups  
+    """)
+
+    st.markdown("---")
+    st.info("⚠️ This AI is not a medical diagnosis tool.")
+
+# ============================================================================
 # STREAMLIT APP SETUP
-# ============================================================================
-
-st.set_page_config(
-    page_title="Maternal Health Assessment",
-    page_icon="🏥",
-    layout="wide"
-)
-
-# Initialize session state to track which phase we're in
-if "phase" not in st.session_state:
-    st.session_state.phase = 1
-    st.session_state.maternal_result = None
-    st.session_state.preeclampsia_result = None
-
-# ============================================================================
-# MAIN APP UI
 # ============================================================================
 
 st.title("🏥 Maternal & Preeclampsia Assessment System")
@@ -93,6 +114,15 @@ st.title("🏥 Maternal & Preeclampsia Assessment System")
 # Quick navigation buttons
 st.markdown("---")
 col_quick1, col_quick2, col_quick3, col_quick4 = st.columns(4)
+
+# Initialize session state to track which phase we're in
+if "phase" not in st.session_state:
+    st.session_state.phase = 1
+    st.session_state.maternal_result = None
+    st.session_state.preeclampsia_result = None
+
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
 with col_quick1:
     st.link_button("🏠 Home", url="https://guileless-ganache-2ac578.netlify.app/", use_container_width=True)
@@ -282,55 +312,14 @@ elif st.session_state.phase == 2:
             st.markdown("### 🚨 IMMEDIATE ACTIONS")
             for i, a in enumerate(advice["immediate_actions"], 1):
                 st.markdown(f"{i}. {a}")
-               
-import streamlit as st
-from chatbot import get_chatbot_response, check_medical_emergency
 
 # ============================================================================
-# MUST BE FIRST STREAMLIT COMMAND
+# CHATBOT SECTION
 # ============================================================================
-st.set_page_config(page_title="Maternal Health AI", page_icon="🤰", layout="wide")
-
-# ============================================================================
-# SIDEBAR (Dashboard)
-# ============================================================================
-with st.sidebar:
-    st.title("🤰 Health Dashboard")
-
-    st.markdown("### ⚠️ Emergency Symptoms")
-    st.write("""
-    - Severe headache  
-    - Blurred vision  
-    - High BP  
-    - Chest pain  
-    - Reduced fetal movement  
-    """)
-
-    st.markdown("---")
-
-    st.markdown("### 💡 Pregnancy Tips")
-    st.write("""
-    - Stay hydrated  
-    - Regular BP monitoring  
-    - Balanced diet  
-    - Regular checkups  
-    """)
-
-    st.markdown("---")
-    st.info("⚠️ This AI is not a medical diagnosis tool.")
-
-# ============================================================================
-# MAIN TITLE
-# ============================================================================
-st.markdown("<h1 style='text-align:center;'>🤖 Maternal Health AI Assistant</h1>", unsafe_allow_html=True)
 
 st.markdown("---")
-
-# ============================================================================
-# CHAT STATE
-# ============================================================================
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+st.markdown("<h1 style='text-align:center;'>🤖 Maternal Health AI Assistant</h1>", unsafe_allow_html=True)
+st.markdown("---")
 
 # Clear chat
 if st.button("🧹 Clear Chat"):
