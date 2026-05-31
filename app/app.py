@@ -283,18 +283,23 @@ elif st.session_state.phase == 2:
             for i, a in enumerate(advice["immediate_actions"], 1):
                 st.markdown(f"{i}. {a}")
 # ============================================================================
-# AI CHATBOT (ChatGPT-style UI)
+# AI CHATBOT (ChatGPT-style UI + Safety + Memory)
 # ============================================================================
+
+import streamlit as st
+from chatbot import get_chatbot_response, check_medical_emergency
 
 st.markdown("---")
 st.header("🤖 Maternal Health AI Assistant")
 
+# -----------------------------
 # Initialize chat history
+# -----------------------------
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
 # -----------------------------
-# Clear Chat Button (NEW)
+# Clear Chat Button
 # -----------------------------
 if st.button("🧹 Clear Chat"):
     st.session_state.messages = []
@@ -307,7 +312,7 @@ for message in st.session_state.messages:
         st.markdown(message["content"])
 
 # -----------------------------
-# Chat input (ChatGPT style)
+# Chat input
 # -----------------------------
 user_question = st.chat_input(
     "Ask about pregnancy, maternal health, or preeclampsia..."
@@ -315,7 +320,7 @@ user_question = st.chat_input(
 
 if user_question:
 
-    # Show + store user message
+    # Save + show user message
     st.session_state.messages.append(
         {"role": "user", "content": user_question}
     )
@@ -323,7 +328,17 @@ if user_question:
     with st.chat_message("user"):
         st.markdown(user_question)
 
-    # Assistant response
+    # -----------------------------
+    # ⚠️ Medical Emergency Check
+    # -----------------------------
+    is_emergency = check_medical_emergency(user_question)
+
+    if is_emergency:
+        st.error("⚠️ Warning: This may indicate a serious medical condition. Please consult a doctor immediately.")
+
+    # -----------------------------
+    # AI Response
+    # -----------------------------
     with st.chat_message("assistant"):
         with st.spinner("Thinking... 🤔"):
 
@@ -337,7 +352,7 @@ if user_question:
                     {"role": "assistant", "content": answer}
                 )
 
-            except Exception as e:
+            except Exception:
                 error_msg = "Sorry, something went wrong. Please try again."
 
                 st.error(error_msg)
