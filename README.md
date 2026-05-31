@@ -6,135 +6,187 @@
 
 Predict maternal health complications and preeclampsia risk using Machine Learning and an interactive healthcare dashboard.
 
+<br>
+
+![Python](https://img.shields.io/badge/Python-3.10+-blue?style=for-the-badge&logo=python)
+![Streamlit](https://img.shields.io/badge/Streamlit-Web_App-red?style=for-the-badge&logo=streamlit)
+![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-ML-orange?style=for-the-badge&logo=scikitlearn)
+![Pandas](https://img.shields.io/badge/Pandas-Data_Analysis-purple?style=for-the-badge&logo=pandas)
+![NumPy](https://img.shields.io/badge/NumPy-Scientific_Computing-blue?style=for-the-badge&logo=numpy)
+![GitHub](https://img.shields.io/badge/GitHub-Project-black?style=for-the-badge&logo=github)
+
+<br><br>
+
+## 🚀 Live Demo
+
+🌐 **Landing Page**  
+https://guileless-ganache-2ac578.netlify.app/
+
+🏥 **Streamlit Application**  
+https://maternal-health-preeclampsia-system.onrender.com/
+
 </div>
 
 ---
 
-# 📌 Overview
+# 🌟 Project Overview
 
-The **Maternal Health & Preeclampsia Risk Prediction System** is a Machine Learning-based healthcare application developed to assist in the early detection of maternal health risks and preeclampsia complications during pregnancy.
+The **Maternal Health & Preeclampsia Risk Prediction System** is an end-to-end Machine Learning healthcare application developed to assist in the early identification of maternal health risks and preeclampsia complications during pregnancy.
+
+The application follows a **two-stage prediction workflow**:
+
+### Phase 1: Maternal Health Risk Assessment
+
+Evaluates overall maternal health risk using pregnancy and medical parameters.
+
+### Phase 2: Preeclampsia Risk Assessment
+
+If high maternal health risk is detected, the user proceeds to a secondary assessment for preeclampsia prediction.
 
 The system provides:
 
-* Maternal health risk assessment
-* Preeclampsia prediction
-* AI-powered probability analysis
-* Personalized medical recommendations
-* Interactive healthcare interface
-* Multi-step assessment workflow
-
-This project combines:
-
-* Machine Learning
-* Healthcare analytics
-* Streamlit web application development
-* Frontend design using Tailwind CSS
-* Responsive UI/UX principles
+- Maternal Health Risk Prediction
+- Preeclampsia Risk Prediction
+- Probability-Based Analysis
+- Personalized Healthcare Recommendations
+- Interactive Dashboard
+- Responsive User Interface
 
 ---
 
 # 🎯 Problem Statement
 
-Pregnancy complications such as **preeclampsia** are among the leading causes of maternal and fetal health risks worldwide.
+Maternal health complications remain one of the leading causes of pregnancy-related mortality worldwide.
 
-Traditional diagnosis methods:
+Among these complications, **Preeclampsia** is a serious condition characterized by high blood pressure and potential organ damage during pregnancy.
 
-* require regular monitoring,
-* depend on medical availability,
-* and may delay early risk identification.
+Challenges include:
 
-This project aims to provide an intelligent digital healthcare solution capable of:
+- Late diagnosis
+- Limited healthcare access
+- Inadequate monitoring
+- Delayed intervention
 
-* assisting healthcare awareness,
-* identifying high-risk pregnancy indicators,
-* and improving early preventive action.
+This project leverages Machine Learning to support early risk assessment and healthcare awareness.
+
+---
+
+# 🎯 Objectives
+
+- Predict maternal health risk using clinical indicators.
+- Identify patients at high risk for preeclampsia.
+- Assist healthcare awareness through predictive analytics.
+- Provide probability-based risk interpretation.
+- Demonstrate practical Machine Learning deployment.
+- Create an accessible healthcare screening interface.
 
 ---
 
 # 🚀 Key Features
 
-## ✅ Maternal Health Risk Prediction
+## ✅ Maternal Health Prediction
 
-Predicts overall maternal health risk based on medical and pregnancy-related parameters.
+Predicts maternal health risk using pregnancy-related and medical attributes.
 
-## ✅ Preeclampsia Risk Assessment
+## ✅ Preeclampsia Prediction
 
-Performs a secondary assessment for preeclampsia risk when high-risk maternal conditions are detected.
+Provides secondary risk assessment when high maternal risk is detected.
 
-## ✅ AI-Based Probability Analysis
+## ✅ Probability Analysis
 
-Displays prediction probability percentages using trained Machine Learning models.
+Displays prediction confidence scores.
 
 ## ✅ Personalized Recommendations
 
-Provides medical guidance and recommendations according to prediction results.
+Offers recommendations based on risk level.
 
-## ✅ Two-Step Workflow
+## ✅ Multi-Step Workflow
 
-Implements a smart sequential healthcare assessment process.
+Implements intelligent conditional assessment.
 
-## ✅ Interactive User Interface
+## ✅ Interactive Dashboard
 
-Responsive healthcare dashboard built using Streamlit and Tailwind CSS.
+Built using Streamlit.
 
 ## ✅ Professional Landing Page
 
-Modern animated landing page using:
+Built using:
 
-* HTML
-* Tailwind CSS
-* Vanilla JavaScript
+- HTML5
+- Tailwind CSS
+- JavaScript
 
 ## ✅ Responsive Design
 
-Optimized for:
+Supports:
 
-* Desktop
-* Laptop
-* Tablet
-* Mobile devices
+- Desktop
+- Laptop
+- Tablet
+- Mobile
 
 ---
 
 # 🧠 Machine Learning Pipeline
 
-The project uses supervised classification models trained on maternal healthcare datasets.
-
-## ML Workflow
-
 ### 1️⃣ Data Collection
 
-Healthcare-related maternal datasets were collected and preprocessed.
+Healthcare-related maternal datasets were collected and analyzed.
 
 ### 2️⃣ Data Cleaning
 
 Performed:
 
-* missing value handling,
-* feature formatting,
-* categorical conversion,
-* data validation.
+- Missing value handling
+- Data validation
+- Categorical conversion
+- Data preprocessing
 
 ### 3️⃣ Feature Engineering
 
-Prepared medical parameters for model training.
+Prepared features for Machine Learning models.
 
 ### 4️⃣ Model Training
 
-Machine Learning classification models were trained for:
+Classification models were trained for:
 
-* Maternal Health Prediction
-* Preeclampsia Prediction
+- Maternal Health Prediction
+- Preeclampsia Prediction
 
-### 5️⃣ Model Serialization
+### 5️⃣ Model Evaluation
 
-Trained models were saved using:
+Models were evaluated using performance metrics.
 
-* Joblib (`.pkl` format)
+### 6️⃣ Model Serialization
 
-### 6️⃣ Model Integration
+Saved using Joblib (`.pkl`).
 
-Integrated directly into the Streamlit application backend.
+### 7️⃣ Deployment
+
+Integrated into Streamlit application.
+
+---
+
+# 🧠 Machine Learning Pipeline Diagram
+
+```mermaid
+flowchart LR
+
+    A[📥 Data Collection]
+    B[🧹 Data Cleaning]
+    C[⚙️ Feature Engineering]
+    D[📊 Model Training]
+    E[💾 Model Serialization]
+    F[🚀 Streamlit Integration]
+    G[📈 Risk Prediction]
+
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    E --> F
+    F --> G
+```
 
 ---
 
@@ -142,200 +194,221 @@ Integrated directly into the Streamlit application backend.
 
 ## 🩺 Maternal Health Features
 
-| Feature          | Description             |
-| ---------------- | ----------------------- |
-| Age              | Patient age             |
-| Gravida          | Number of pregnancies   |
-| Weight           | Body weight             |
-| Height           | Height                  |
-| Gestation Period | Pregnancy duration      |
-| Blood Pressure   | Systolic & Diastolic BP |
-| Anemia           | Anemia condition        |
-| Albumin          | Urine albumin status    |
-| Blood Sugar      | Glucose condition       |
-| Fetal Position   | Baby position           |
-| Fetal Heart Beat | Fetal heart rate        |
-| Jaundice         | Liver condition         |
-| VDRL             | Infection indicator     |
-| HRsAG            | Hepatitis indicator     |
+| Feature | Description |
+|----------|-------------|
+| Age | Patient age |
+| Gravida | Number of pregnancies |
+| Weight | Body weight |
+| Height | Height |
+| Gestation Period | Pregnancy duration |
+| Blood Pressure | Systolic & Diastolic BP |
+| Anemia | Anemia condition |
+| Albumin | Urine albumin status |
+| Blood Sugar | Blood sugar level |
+| Fetal Position | Baby position |
+| Fetal Heart Beat | Fetal heart rate |
+| Jaundice | Liver condition |
+| VDRL | Infection indicator |
+| HRsAG | Hepatitis indicator |
 
 ---
 
 ## 🫀 Preeclampsia Features
 
-| Feature                | Description             |
-| ---------------------- | ----------------------- |
-| Age                    | Patient age             |
-| Blood Pressure         | Systolic & Diastolic BP |
-| BMI                    | Body Mass Index         |
-| Blood Sugar            | Blood glucose level     |
-| Body Temperature       | Temperature             |
-| Heart Rate             | Heart beats per minute  |
-| Previous Complications | Pregnancy history       |
-| Diabetes History       | Diabetes indicators     |
-| Mental Health          | Mental health status    |
+| Feature | Description |
+|----------|-------------|
+| Age | Patient age |
+| Blood Pressure | Systolic & Diastolic BP |
+| BMI | Body Mass Index |
+| Blood Sugar | Blood glucose level |
+| Body Temperature | Temperature |
+| Heart Rate | Heart rate |
+| Previous Complications | Pregnancy history |
+| Diabetes History | Diabetes indicators |
+| Mental Health | Mental health condition |
 
 ---
 
 # 🏗️ System Architecture
 
-```bash
-User Input
-     ↓
-Frontend Interface (HTML + Tailwind CSS)
-     ↓
-Streamlit Backend
-     ↓
-Machine Learning Models (.pkl)
-     ↓
-Prediction Engine
-     ↓
-Risk Probability + Recommendations
+```mermaid
+flowchart TD
+
+    A[🌐 Landing Page<br/>HTML + Tailwind CSS] --> B[🚀 Get Started]
+
+    B --> C[🏥 Streamlit Application]
+
+    C --> D[🩺 Maternal Health Assessment Form]
+
+    D --> E[👩 Patient Enters Maternal Health Details]
+
+    E --> F[🤖 Maternal Health ML Model]
+
+    F --> G{Maternal Health Risk?}
+
+    G -->|Low Risk| H[✅ Display Risk Probability & Recommendations]
+
+    H --> I[🏁 Assessment Complete]
+
+    G -->|High Risk| J[➡️ Proceed to Preeclampsia Assessment]
+
+    J --> K[🫀 Preeclampsia Assessment Form]
+
+    K --> L[👩 Patient Enters Clinical Details]
+
+    L --> M[🤖 Preeclampsia ML Model]
+
+    M --> N{Preeclampsia Risk Level}
+
+    N -->|Low| O[✅ Low Risk Result]
+
+    N -->|Moderate| P[⚠️ Moderate Risk Result]
+
+    N -->|High| Q[🚨 High Risk Result]
+
+    O --> R[📋 Recommendations]
+    P --> R
+    Q --> R
+
+    R --> S[🏁 Assessment Complete]
 ```
 
 ---
 
-# 🛠️ Tech Stack
+# 🔄 Application Workflow
 
-# Frontend
+```mermaid
+flowchart LR
 
-* HTML5
-* Tailwind CSS
-* Vanilla JavaScript
+    User[👩 Patient]
+    Landing[🌐 Landing Page]
+    Streamlit[🏥 Streamlit App]
 
-# Backend
+    Maternal[🩺 Maternal Assessment]
+    MaternalModel[🤖 Maternal ML Model]
 
-* Python
-* Streamlit
+    Decision{High Risk?}
 
-# Machine Learning
+    Preeclampsia[🫀 Preeclampsia Assessment]
+    PreeModel[🤖 Preeclampsia ML Model]
 
-* Scikit-learn
-* Pandas
-* NumPy
-* Joblib
+    Result[📊 Prediction Result]
+    Advice[📋 Recommendations]
 
-# Development Tools
+    User --> Landing
+    Landing --> Streamlit
+    Streamlit --> Maternal
+    Maternal --> MaternalModel
+    MaternalModel --> Decision
 
-* VS Code
-* Git
-* GitHub
+    Decision -->|No| Result
+
+    Decision -->|Yes| Preeclampsia
+    Preeclampsia --> PreeModel
+    PreeModel --> Result
+
+    Result --> Advice
+```
+
+---
+
+# 🛠️ Technology Stack
+
+## Frontend
+
+- HTML5
+- Tailwind CSS
+- JavaScript
+
+## Backend
+
+- Python
+- Streamlit
+
+## Machine Learning
+
+- Scikit-learn
+- Pandas
+- NumPy
+- Joblib
+
+## Development Tools
+
+- VS Code
+- Git
+- GitHub
 
 ---
 
 # 📂 Project Structure
 
 ```bash
-preeclampsia-main/
+maternal-health-preeclampsia-system/
+│
+├── .streamlit/
+│   └── config.toml
+│
+├── .vscode/
+│   └── settings.json
 │
 ├── app/
-│   ├── app.py
-│   ├── doctor_advice.json
-│   │
 │   ├── models/
+│   │   ├── loader.py
 │   │   ├── maternal_health_model.pkl
 │   │   └── preeclampsia_model.pkl
 │   │
-│   └── static/
-│       └── index.html
+│   ├── static/
+│   │   └── index.html
+│   │
+│   ├── app.py
+│   └── doctor_advice.json
 │
-├── requirements.txt
+├── .gitignore
+├── .python-version
+├── pyproject.toml
 ├── README.md
-└── .gitignore
+├── render.yaml
+└── uv.lock
 ```
 
----
+## 📁 Directory Description
 
-
-
-# 🌐 Application Workflow
-
-## Step 1 — Landing Page
-
-Users first access the responsive healthcare landing page.
-
-## Step 2 — Maternal Health Assessment
-
-The system collects maternal medical information.
-
-## Step 3 — Risk Prediction
-
-The ML model predicts maternal health risk probability.
-
-## Step 4 — Conditional Navigation
-
-If high-risk conditions are detected, users proceed to preeclampsia assessment.
-
-## Step 5 — Preeclampsia Analysis
-
-Secondary ML model predicts preeclampsia probability.
-
-## Step 6 — Recommendation System
-
-The application displays:
-
-* Risk category
-* Probability score
-* Medical guidance
-* Recommendations
+| File / Folder | Description |
+|--------------|-------------|
+| `.streamlit/config.toml` | Streamlit configuration settings |
+| `.vscode/settings.json` | VS Code workspace settings |
+| `app/app.py` | Main Streamlit application |
+| `app/doctor_advice.json` | Risk thresholds and recommendation messages |
+| `app/models/loader.py` | Model loading utility |
+| `app/models/maternal_health_model.pkl` | Trained maternal health prediction model |
+| `app/models/preeclampsia_model.pkl` | Trained preeclampsia prediction model |
+| `app/static/index.html` | Landing page (HTML + Tailwind CSS) |
+| `.gitignore` | Git ignored files |
+| `.python-version` | Python version configuration |
+| `pyproject.toml` | Project dependencies and metadata |
+| `render.yaml` | Render deployment configuration |
+| `uv.lock` | Locked dependency versions |
+| `README.md` | Project documentation |
 
 ---
-
-# 🎨 UI & UX Highlights
-
-* Professional healthcare design
-* Animated landing page
-* Tailwind CSS responsive layout
-* Smooth hover effects
-* Scroll animations
-* Interactive cards
-* Mobile-friendly interface
-* Modern dashboard styling
-
----
-
-# ☁️ Deployment Options
-
-This project can be deployed on:
-
-| Platform                  | Status |
-| ------------------------- | ------ |
-| Streamlit Community Cloud | ✅      |
-| Render                    | ✅      |
-| Railway                   | ✅      |
-| Hugging Face Spaces       | ✅      |
-
----
-
-# 🔮 Future Improvements
-
-Future enhancements planned for the project:
-
-* User authentication system
-* Doctor dashboard
-* Database integration
-* Patient history tracking
-* PDF medical report generation
-* Cloud-hosted ML APIs
-* Real-time analytics
-* Deep Learning integration
-* Chatbot support
-
----
-
 
 # 📚 Learning Outcomes
 
-Through this project, the following concepts were implemented and learned:
-
-* End-to-end Machine Learning workflow
-* Healthcare data analysis
-* Streamlit web app development
-* Frontend + backend integration
-* Model deployment concepts
-* Interactive UI/UX design
-* GitHub project management
+- End-to-End Machine Learning Workflow
+- Healthcare Data Analytics
+- Feature Engineering
+- Model Deployment
+- Streamlit Development
+- Frontend + Backend Integration
+- GitHub Project Management
+- Healthcare AI Applications
 
 ---
 
+# ⚠️ Medical Disclaimer
 
+This application is developed for educational and research purposes only.
+
+The predictions generated by the system should not be considered medical advice, diagnosis, or treatment recommendations.
+
+Patients should always consult qualified healthcare professionals for medical decisions.
