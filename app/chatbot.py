@@ -1,19 +1,28 @@
-import streamlit as st
-import google.generativeai as genai
+import os
 import time
+
+import google.generativeai as genai
+from dotenv import load_dotenv
+
 from cache import get_cached_response, set_cache
 
 # =========================
-# API KEY CONFIG
+# LOAD ENV VARIABLES
 # =========================
-API_KEY = st.secrets["GEMINI_API_KEY"]
+load_dotenv()
 
+API_KEY = os.getenv("GEMINI_API_KEY")
+
+if not API_KEY:
+    raise ValueError("GEMINI_API_KEY not found in .env file")
+
+# =========================
+# GEMINI CONFIG
+# =========================
 genai.configure(api_key=API_KEY)
 
-# =========================
-# MODEL CONFIG
-# =========================
-MODEL_NAME = "gemini-3.1-flash-lite"
+MODEL_NAME = "gemini-2.5-flash-lite"
+
 model = genai.GenerativeModel(MODEL_NAME)
 
 # =========================
@@ -23,10 +32,18 @@ def check_medical_emergency(text: str) -> bool:
     text = text.lower()
 
     danger_words = [
-        "bleeding", "seizure", "unconscious", "faint",
-        "no movement", "fits", "convulsion",
-        "severe pain", "chest pain", "emergency",
-        "blurred vision", "high bp crisis"
+        "bleeding",
+        "seizure",
+        "unconscious",
+        "faint",
+        "no movement",
+        "fits",
+        "convulsion",
+        "severe pain",
+        "chest pain",
+        "emergency",
+        "blurred vision",
+        "high bp crisis"
     ]
 
     return any(word in text for word in danger_words)
@@ -39,81 +56,86 @@ def simple_medical_answers(user_input):
 
     if "what is preeclampsia" in text:
         return (
-            "Preeclampsia is a pregnancy condition with high blood pressure "
-            "after 20 weeks of pregnancy. It can affect organs like liver and kidneys "
-            "and requires medical monitoring."
+            "Preeclampsia is a pregnancy condition characterized by high blood pressure "
+            "after 20 weeks of pregnancy. It may affect organs such as the liver and kidneys "
+            "and requires regular medical monitoring."
         )
 
     if "what is hypertension" in text:
         return (
-            "Hypertension means high blood pressure. During pregnancy, it must be monitored "
-            "to avoid complications like preeclampsia."
+            "Hypertension means high blood pressure. During pregnancy, it should be monitored "
+            "carefully because it may increase the risk of complications such as preeclampsia."
         )
 
     if "nutrition" in text:
-        return "Eat iron-rich foods, fruits, vegetables, and stay hydrated during pregnancy."
+        return (
+            "During pregnancy, eat iron-rich foods, fruits, vegetables, whole grains, "
+            "protein-rich foods, and drink plenty of water."
+        )
 
     return None
 
 # =========================
-# MAIN CHAT FUNCTION
+# CHATBOT RESPONSE
 # =========================
 def get_chatbot_response(user_input, chat_history=None):
 
-    # STEP 1: CACHE CHECK
-    cached = get_cached_response(user_input)
-    if cached:
-        return cached
+    # Step 1: Check cache
+    cached_response = get_cached_response(user_input)
+    if cached_response:
+        return cached_response
 
-    # STEP 2: RULE-BASED RESPONSE
+    # Step 2: Rule-based answers
     simple_answer = simple_medical_answers(user_input)
     if simple_answer:
         set_cache(user_input, simple_answer)
         return simple_answer
 
-    # STEP 3: CONTEXT BUILD
+    # Step 3: Build conversation context
     context = ""
+
     if chat_history:
         for msg in chat_history[-8:]:
             context += f"{msg['role']}: {msg['content']}\n"
 
     prompt = f"""
-You are a certified Maternal Health AI Assistant.
+You are a Maternal Health AI Assistant.
 
-Rules:
-- Give safe medical advice
-- Keep answers simple and clear
-- Always recommend doctor for serious symptoms
-- Focus on pregnancy, BP, preeclampsia, nutrition
+Guidelines:
+- Give safe and medically responsible information.
+- Keep answers simple and easy to understand.
+- Focus on pregnancy, maternal health, blood pressure, nutrition, and preeclampsia.
+- Never provide a diagnosis.
+- Recommend consulting a healthcare professional for concerning symptoms.
 
 Conversation:
 {context}
 
 User: {user_input}
+
 Assistant:
 """
 
-    # STEP 4: GEMINI CALL
+    # Step 4: Gemini response
     try:
         response = model.generate_content(prompt)
 
-        if response and hasattr(response, "text"):
-            answer = response.text
+        if response and hasattr(response, "text") and response.text:
+            answer = response.text.strip()
 
-            # save to cache
             set_cache(user_input, answer)
 
             return answer
 
-        return "⚠️ No response from AI."
+        return "⚠️ No response received from the AI service."
 
     except Exception as e:
-        err = str(e)
+        error_message = str(e)
 
-        if "429" in err:
+        if "429" in error_message:
             return "⚠️ Too many requests. Please try again later."
 
-        if "503" in err:
-            return "⚠️ AI service temporarily unavailable. Try again."
+        if "503" in error_message:
+            return "⚠️ AI service is temporarily unavailable. Please try again."
 
-        return f"⚠️ AI Error: {err}"
+        return f"⚠️ AI Error: {error_message}"
