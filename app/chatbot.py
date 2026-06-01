@@ -1,7 +1,7 @@
 import streamlit as st
 import google.generativeai as genai
 import time
-from app.cache import get_cached_response, set_cache
+from cache import get_cached_response, set_caches
 
 # =========================
 # API KEY CONFIG
