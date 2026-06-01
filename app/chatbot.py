@@ -1,7 +1,7 @@
 import streamlit as st
 import google.generativeai as genai
 import time
-from cache import get_cached_response, set_caches
+from cache import get_cached_response, set_cache
 
 # =========================
 # API KEY CONFIG
@@ -13,7 +13,7 @@ genai.configure(api_key=API_KEY)
 # =========================
 # MODEL CONFIG
 # =========================
-MODEL_NAME = "gemini-1.5-flash"
+MODEL_NAME = "gemini-3.1-flash-lite"
 model = genai.GenerativeModel(MODEL_NAME)
 
 # =========================
