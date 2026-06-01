@@ -6,12 +6,20 @@ A two-phase assessment tool:
 - Phase 2: Preeclampsia risk assessment (only if Phase 1 shows high risk)
 """
 
+import sys
+import os
+
+# Ensure the app directory is in the path for Render deployment
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 import streamlit as st
 import pandas as pd
 import json
 import joblib
+import plotly.graph_objects as go
 from pathlib import Path
-from chatbot import get_chatbot_response, check_medical_emergency
+
+from app.chatbot import get_chatbot_response, check_medical_emergency
 
 # ============================================================================
 # CONFIGURATION
@@ -48,6 +56,56 @@ def should_proceed_to_phase2(prob):
 
 def load_model(name):
     return joblib.load(MODELS_PATH / f"{name}.pkl")
+
+def make_gauge(title, prob):
+    """Create a circular gauge (speedometer) chart for a given probability."""
+    if prob < 40:
+        color = "#2ecc71"
+        risk_label = "Low Risk"
+    elif prob < 70:
+        color = "#f39c12"
+        risk_label = "Moderate Risk"
+    else:
+        color = "#e74c3c"
+        risk_label = "High Risk"
+
+    fig = go.Figure(go.Indicator(
+        mode="gauge+number+delta",
+        value=prob,
+        number={"suffix": "%", "font": {"size": 36, "color": color}},
+        title={"text": f"<b>{title}</b><br><span style='font-size:14px;color:{color}'>{risk_label}</span>", "font": {"size": 18}},
+        gauge={
+            "axis": {
+                "range": [0, 100],
+                "tickwidth": 1,
+                "tickcolor": "gray",
+                "tickvals": [0, 20, 40, 60, 80, 100],
+                "ticktext": ["0", "20", "40", "60", "80", "100"]
+            },
+            "bar": {"color": color, "thickness": 0.25},
+            "bgcolor": "white",
+            "borderwidth": 2,
+            "bordercolor": "lightgray",
+            "steps": [
+                {"range": [0, 40],   "color": "#d5f5e3"},
+                {"range": [40, 70],  "color": "#fdebd0"},
+                {"range": [70, 100], "color": "#fadbd8"},
+            ],
+            "threshold": {
+                "line": {"color": color, "width": 4},
+                "thickness": 0.8,
+                "value": prob
+            }
+        }
+    ))
+
+    fig.update_layout(
+        height=300,
+        margin={"t": 80, "b": 20, "l": 30, "r": 30},
+        paper_bgcolor="white",
+        font={"family": "Arial"}
+    )
+    return fig
 
 # ============================================================================
 # STREAMLIT APP SETUP
@@ -93,7 +151,6 @@ menu = st.sidebar.selectbox(
     index=st.session_state.menu_index,
     key="sidebar_menu"
 )
-# Keep index in sync when user clicks sidebar directly
 st.session_state.menu_index = MENU_OPTIONS.index(menu)
 
 # ============================================================================
@@ -383,6 +440,7 @@ elif menu == "📈 Analytics":
     if maternal_prob is None and preeclampsia_prob is None:
         st.warning("No assessment data available. Please complete at least one assessment first.")
     else:
+        # ── Summary Table ──────────────────────────────────────────────────
         rows = []
         if maternal_prob is not None:
             risk = "Low" if maternal_prob < 40 else "Moderate" if maternal_prob < 70 else "High"
@@ -396,9 +454,37 @@ elif menu == "📈 Analytics":
         st.markdown("### 📋 Assessment Summary")
         st.dataframe(df, use_container_width=True)
 
-        st.markdown("### 📊 Risk Probability Chart")
-        st.bar_chart(df.set_index("Assessment")["Probability (%)"])
+        # ── Circular Gauges ────────────────────────────────────────────────
+        st.markdown("### 🎯 Risk Probability Gauges")
 
+        if maternal_prob is not None and preeclampsia_prob is not None:
+            col_g1, col_g2 = st.columns(2)
+            with col_g1:
+                st.plotly_chart(
+                    make_gauge("🤰 Maternal Health Risk", maternal_prob),
+                    use_container_width=True
+                )
+            with col_g2:
+                st.plotly_chart(
+                    make_gauge("🫀 Preeclampsia Risk", preeclampsia_prob),
+                    use_container_width=True
+                )
+        elif maternal_prob is not None:
+            col_g1, col_g2, col_g3 = st.columns([1, 2, 1])
+            with col_g2:
+                st.plotly_chart(
+                    make_gauge("🤰 Maternal Health Risk", maternal_prob),
+                    use_container_width=True
+                )
+        elif preeclampsia_prob is not None:
+            col_g1, col_g2, col_g3 = st.columns([1, 2, 1])
+            with col_g2:
+                st.plotly_chart(
+                    make_gauge("🫀 Preeclampsia Risk", preeclampsia_prob),
+                    use_container_width=True
+                )
+
+        # ── Risk Level Breakdown ───────────────────────────────────────────
         st.markdown("### 🎯 Risk Level Breakdown")
         risk_counts = df["Risk Level"].value_counts().reset_index()
         risk_counts.columns = ["Risk Level", "Count"]

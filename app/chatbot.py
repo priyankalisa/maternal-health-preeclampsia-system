@@ -4,17 +4,16 @@ import time
 from app.cache import get_cached_response, set_cache
 
 # =========================
-# API KEY
+# API KEY CONFIG
 # =========================
 API_KEY = st.secrets["GEMINI_API_KEY"]
 
 genai.configure(api_key=API_KEY)
 
 # =========================
-# MODEL (CURRENT STABLE GEMINI)
+# MODEL CONFIG
 # =========================
 MODEL_NAME = "gemini-1.5-flash"
-
 model = genai.GenerativeModel(MODEL_NAME)
 
 # =========================
@@ -33,7 +32,7 @@ def check_medical_emergency(text: str) -> bool:
     return any(word in text for word in danger_words)
 
 # =========================
-# RULE-BASED ANSWERS
+# RULE-BASED RESPONSES
 # =========================
 def simple_medical_answers(user_input):
     text = user_input.lower()
@@ -42,13 +41,13 @@ def simple_medical_answers(user_input):
         return (
             "Preeclampsia is a pregnancy condition with high blood pressure "
             "after 20 weeks of pregnancy. It can affect organs like liver and kidneys "
-            "and needs regular medical monitoring."
+            "and requires medical monitoring."
         )
 
     if "what is hypertension" in text:
         return (
             "Hypertension means high blood pressure. During pregnancy, it must be monitored "
-            "carefully to avoid complications like preeclampsia."
+            "to avoid complications like preeclampsia."
         )
 
     if "nutrition" in text:
@@ -66,7 +65,7 @@ def get_chatbot_response(user_input, chat_history=None):
     if cached:
         return cached
 
-    # STEP 2: RULE-BASED ANSWER
+    # STEP 2: RULE-BASED RESPONSE
     simple_answer = simple_medical_answers(user_input)
     if simple_answer:
         set_cache(user_input, simple_answer)
@@ -101,7 +100,9 @@ Assistant:
         if response and hasattr(response, "text"):
             answer = response.text
 
+            # save to cache
             set_cache(user_input, answer)
+
             return answer
 
         return "⚠️ No response from AI."
