@@ -167,7 +167,7 @@ st.markdown("---")
 col_quick1, col_quick2, col_quick3, col_quick4 = st.columns(4)
 
 with col_quick1:
-    st.link_button("🏠 Home", url="https://guileless-ganache-2ac578.netlify.app/", use_container_width=True)
+    st.link_button("🏠 Home", url="https://priyankalisa.github.io/maternal-health-preeclampsia-system/", use_container_width=True)
 
 with col_quick2:
     if st.button("📋 Step 1: Maternal Health", use_container_width=True):
