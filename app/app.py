@@ -19,7 +19,7 @@ import joblib
 import plotly.graph_objects as go
 from pathlib import Path
 
-from app.chatbot import get_chatbot_response, check_medical_emergency
+from chatbot import get_chatbot_response, check_medical_emergency
 
 # ============================================================================
 # CONFIGURATION
