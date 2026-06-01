@@ -16,34 +16,18 @@ from chatbot import get_chatbot_response, check_medical_emergency
 # ============================================================================
 # CONFIGURATION
 # ============================================================================
-# Path to the JSON config file (doctor advice messages and thresholds)
 CONFIG_PATH = Path(__file__).parent / "doctor_advice.json"
-# Path to the trained ML models
 MODELS_PATH = Path(__file__).parent / "models"
-
-# ============================================================================
-# MUST BE FIRST STREAMLIT COMMAND
-# ============================================================================
-st.set_page_config(
-    page_title="Maternal Health Assessment",
-    page_icon="🏥",
-    layout="wide"
-)
 
 # ============================================================================
 # HELPER FUNCTIONS
 # ============================================================================
 
 def load_config():
-    """Load the doctor advice config from JSON file."""
     with open(CONFIG_PATH, "r", encoding="utf-8") as f:
         return json.load(f)
 
 def get_range(prob, thresholds):
-    """
-    Determine the risk range based on probability and thresholds.
-    Returns: 'low', 'moderate', or 'high'
-    """
     if prob < thresholds["low"]:
         return "low"
     elif prob < thresholds["moderate"]:
@@ -52,13 +36,6 @@ def get_range(prob, thresholds):
         return "high"
 
 def get_advice(model_name, prob):
-    """
-    Get the appropriate doctor advice based on model type and probability.
-    Args:
-        model_name: 'maternal_health' or 'preeclampsia'
-        prob: probability percentage
-    Returns: dict with advice content
-    """
     config = load_config()
     thresholds = config["thresholds"][model_name]
     range_key = get_range(prob, thresholds)
@@ -66,148 +43,197 @@ def get_advice(model_name, prob):
     return {**advice, "probability": prob, "range": range_key}
 
 def should_proceed_to_phase2(prob):
-    """
-    Check if we should proceed to Phase 2 (preeclampsia assessment).
-    Only proceeds if maternal health risk is high.
-    """
     config = load_config()
     return prob >= config["thresholds"]["maternal_health"]["high"]
 
 def load_model(name):
-    """Load a trained model from the models folder."""
     return joblib.load(MODELS_PATH / f"{name}.pkl")
-
-# ============================================================================
-# SIDEBAR (Dashboard)
-# ============================================================================
-with st.sidebar:
-    st.title("🤰 Health Dashboard")
-
-    st.markdown("### ⚠️ Emergency Symptoms")
-    st.write("""
-    - Severe headache  
-    - Blurred vision  
-    - High BP  
-    - Chest pain  
-    - Reduced fetal movement  
-    """)
-
-    st.markdown("---")
-
-    st.markdown("### 💡 Pregnancy Tips")
-    st.write("""
-    - Stay hydrated  
-    - Regular BP monitoring  
-    - Balanced diet  
-    - Regular checkups  
-    """)
-
-    st.markdown("---")
-    st.info("⚠️ This AI is not a medical diagnosis tool.")
 
 # ============================================================================
 # STREAMLIT APP SETUP
 # ============================================================================
 
-st.title("🏥 Maternal & Preeclampsia Assessment System")
+st.set_page_config(
+    page_title="Maternal Health Assessment",
+    page_icon="🏥",
+    layout="wide"
+)
 
-# Quick navigation buttons
-st.markdown("---")
-col_quick1, col_quick2, col_quick3, col_quick4 = st.columns(4)
+# ============================================================================
+# SESSION STATE INIT
+# ============================================================================
 
-# Initialize session state to track which phase we're in
-if "phase" not in st.session_state:
-    st.session_state.phase = 1
+MENU_OPTIONS = [
+    "📊 Dashboard",
+    "👩‍⚕️ Maternal Check",
+    "🫀 Preeclampsia Check",
+    "💬 AI Assistant",
+    "📈 Analytics"
+]
+
+if "menu_index" not in st.session_state:
+    st.session_state.menu_index = 0
+
+if "maternal_result" not in st.session_state:
     st.session_state.maternal_result = None
+
+if "preeclampsia_result" not in st.session_state:
     st.session_state.preeclampsia_result = None
 
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+
+# ============================================================================
+# SIDEBAR MENU — driven by session state index so buttons can change it
+# ============================================================================
+
+menu = st.sidebar.selectbox(
+    "🏥 Hospital System",
+    MENU_OPTIONS,
+    index=st.session_state.menu_index,
+    key="sidebar_menu"
+)
+# Keep index in sync when user clicks sidebar directly
+st.session_state.menu_index = MENU_OPTIONS.index(menu)
+
+# ============================================================================
+# MAIN TITLE
+# ============================================================================
+
+st.title("🏥 Maternal & Preeclampsia Assessment System")
+st.markdown("---")
+
+# ============================================================================
+# QUICK NAV BUTTONS
+# ============================================================================
+
+col_quick1, col_quick2, col_quick3, col_quick4 = st.columns(4)
 
 with col_quick1:
     st.link_button("🏠 Home", url="https://guileless-ganache-2ac578.netlify.app/", use_container_width=True)
 
 with col_quick2:
     if st.button("📋 Step 1: Maternal Health", use_container_width=True):
-        st.session_state.phase = 1
+        st.session_state.menu_index = MENU_OPTIONS.index("👩‍⚕️ Maternal Check")
         st.session_state.preeclampsia_result = None
         st.rerun()
 
 with col_quick3:
-    if st.button("🫀 Step 2: Preeclampsia", use_container_width=True, disabled=not st.session_state.maternal_result):
-        if st.session_state.maternal_result and should_proceed_to_phase2(st.session_state.maternal_result["probability"]):
-            st.session_state.phase = 2
-            st.rerun()
+    phase2_disabled = not (
+        st.session_state.maternal_result and
+        should_proceed_to_phase2(st.session_state.maternal_result["probability"])
+    )
+    if st.button("🫀 Step 2: Preeclampsia", use_container_width=True, disabled=phase2_disabled):
+        st.session_state.menu_index = MENU_OPTIONS.index("🫀 Preeclampsia Check")
+        st.rerun()
 
 with col_quick4:
     if st.button("🔄 Reset All", use_container_width=True):
-        st.session_state.phase = 1
+        st.session_state.menu_index = 0
         st.session_state.maternal_result = None
         st.session_state.preeclampsia_result = None
         st.rerun()
 
 st.markdown("---")
 
-# Show current step with navigation buttons
+# ============================================================================
+# BACK / NEXT NAV BAR
+# ============================================================================
+
 col_nav1, col_nav2, col_nav3 = st.columns([1, 2, 1])
 
 with col_nav1:
-    if st.button("⬅️ Back", disabled=st.session_state.phase == 1):
-        st.session_state.phase = 1
-        st.session_state.preeclampsia_result = None
+    back_disabled = st.session_state.menu_index == 0
+    if st.button("⬅️ Back", disabled=back_disabled):
+        st.session_state.menu_index = max(0, st.session_state.menu_index - 1)
         st.rerun()
 
 with col_nav2:
-    st.markdown("### " + (
-        "📍 Step 1: Maternal Health Assessment"
-        if st.session_state.phase == 1
-        else "📍 Step 2: Preeclampsia Assessment"
-    ))
+    st.markdown(f"### 📍 {MENU_OPTIONS[st.session_state.menu_index]}")
 
 with col_nav3:
-    if st.button("Next ➡️", disabled=st.session_state.phase == 2 or not st.session_state.maternal_result):
-        if st.session_state.maternal_result and should_proceed_to_phase2(st.session_state.maternal_result["probability"]):
-            st.session_state.phase = 2
+    next_disabled = st.session_state.menu_index >= len(MENU_OPTIONS) - 1
+    if st.button("Next ➡️", disabled=next_disabled):
+        next_index = st.session_state.menu_index + 1
+        if MENU_OPTIONS[next_index] == "🫀 Preeclampsia Check":
+            if st.session_state.maternal_result and should_proceed_to_phase2(st.session_state.maternal_result["probability"]):
+                st.session_state.menu_index = next_index
+                st.rerun()
+            else:
+                st.warning("⚠️ Preeclampsia check is only available after a High Risk maternal result.")
+        else:
+            st.session_state.menu_index = next_index
             st.rerun()
 
+st.markdown("---")
+
 # ============================================================================
-# PHASE 1: MATERNAL HEALTH ASSESSMENT
+# PAGE: DASHBOARD
 # ============================================================================
 
-if st.session_state.phase == 1:
+if menu == "📊 Dashboard":
+    st.title("🏥 Hospital Overview Dashboard")
+
+    maternal_prob = st.session_state.maternal_result["probability"] if st.session_state.maternal_result else None
+    preeclampsia_prob = st.session_state.preeclampsia_result["probability"] if st.session_state.preeclampsia_result else None
+
+    maternal_done = maternal_prob is not None
+    preeclampsia_done = preeclampsia_prob is not None
+    high_risk = maternal_done and should_proceed_to_phase2(maternal_prob)
+
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Assessments Done", int(maternal_done) + int(preeclampsia_done))
+    col2.metric("High Risk", "Yes ⚠️" if high_risk else "No ✅")
+    col3.metric("AI Status", "Active ✅")
+
+    st.markdown("---")
+
+    if maternal_done:
+        color = "green" if maternal_prob < 40 else "orange" if maternal_prob < 70 else "red"
+        st.markdown(f"**🤰 Maternal Health Risk:** <span style='color:{color}'>{maternal_prob:.1f}%</span>", unsafe_allow_html=True)
+    else:
+        st.info("🤰 Maternal Health assessment not done yet.")
+
+    if preeclampsia_done:
+        color = "green" if preeclampsia_prob < 40 else "orange" if preeclampsia_prob < 70 else "red"
+        st.markdown(f"**🫀 Preeclampsia Risk:** <span style='color:{color}'>{preeclampsia_prob:.1f}%</span>", unsafe_allow_html=True)
+    else:
+        st.info("🫀 Preeclampsia assessment not done yet.")
+
+# ============================================================================
+# PAGE: MATERNAL CHECK
+# ============================================================================
+
+elif menu == "👩‍⚕️ Maternal Check":
     with st.expander("📋 Enter Maternal Health Data", expanded=True):
-        # Create two columns for better layout
         col1, col2 = st.columns(2)
-        
+
         with col1:
-            # Basic info
             age = st.number_input("Age", 15, 60, 25)
             gravida = st.number_input("Gravida (pregnancies)", 0, 20, 1)
             titi_tika = st.number_input("TiTi Tika", 0, 10, 0)
             gestation = st.number_input("Gestation (weeks)", 1, 42, 20)
             weight = st.number_input("Weight (kg)", 30.0, 200.0, 60.0)
             height = st.number_input("Height (cm)", 100.0, 220.0, 160.0)
-        
+
         with col2:
-            # Medical conditions
             anemia = st.selectbox("Anemia", ["None", "Minimal", "Medium"])
             jaundice = st.selectbox("Jaundice", ["None", "Minimal", "Medium"])
             fetal_pos = st.selectbox("Fetal Position", ["Normal", "Abnormal"])
             fetal_hb = st.number_input("Fetal Heart Beat", 80, 200, 140)
-            albumin = st.selectbox("Albumin", ["None", "Minimal", "Medium","Higher"])
+            albumin = st.selectbox("Albumin", ["None", "Minimal", "Medium", "Higher"])
             blood_sugar = st.selectbox("Blood Sugar", ["Yes", "No"])
 
         col3, col4 = st.columns(2)
-        
+
         with col3:
             vdrl = st.selectbox("VDRL", ["Negative", "Positive"])
             hrsag = st.selectbox("HRsAG", ["Negative", "Positive"])
-        
+
         with col4:
             sys_bp = st.number_input("Systolic BP (mmHg)", 60, 200, 120)
             dia_bp = st.number_input("Diastolic BP (mmHg)", 40, 120, 80)
 
-        # Create DataFrame for the model
         maternal_data = pd.DataFrame({
             'Age': [age], 'Gravida': [gravida], 'TiTi Tika': [titi_tika],
             'Gestation period': [gestation], 'Weight': [weight], 'Height': [height],
@@ -216,53 +242,48 @@ if st.session_state.phase == 1:
             'VDRL': [vdrl], 'HRsAG': [hrsag], 'Systolic_BP': [sys_bp], 'Diastolic_BP': [dia_bp]
         })
 
-    # Run assessment button
     if st.button("🔍 Assess Maternal Health", type="primary"):
         with st.spinner("Analyzing maternal health risk..."):
             model = load_model("maternal_health_model")
             prob = model.predict_proba(maternal_data)[0][1] * 100
             st.session_state.maternal_result = {"probability": prob}
 
-    # Show results if we have them
     if st.session_state.maternal_result:
         advice = get_advice("maternal_health", st.session_state.maternal_result["probability"])
-        
-        # Color code: green=low, orange=moderate, red=high
         color = "green" if advice["range"] == "low" else "orange" if advice["range"] == "moderate" else "red"
-        
+
         st.markdown(f"## {advice.get('title', 'Result')}")
         st.markdown(f"### Probability: <span style='color:{color}'>{advice['probability']:.1f}%</span>", unsafe_allow_html=True)
-        
+
         if "message" in advice:
             st.markdown(f"**{advice['message']}**")
-        
+
         if "recommendations" in advice:
             st.markdown("### 📋 Recommendations")
             for r in advice["recommendations"]:
                 st.markdown(f"- {r}")
-        
-        # If high risk, show button to proceed to Phase 2
+
         if should_proceed_to_phase2(advice["probability"]):
             st.warning("⚠️ High risk factors detected!")
             if st.button("➡️ Continue to Preeclampsia Assessment"):
-                st.session_state.phase = 2
+                st.session_state.menu_index = MENU_OPTIONS.index("🫀 Preeclampsia Check")
                 st.rerun()
 
 # ============================================================================
-# PHASE 2: PREECLAMPSIA ASSESSMENT
+# PAGE: PREECLAMPSIA CHECK
 # ============================================================================
 
-elif st.session_state.phase == 2:
+elif menu == "🫀 Preeclampsia Check":
     with st.expander("🫀 Enter Preeclampsia Data", expanded=True):
         col1, col2 = st.columns(2)
-        
+
         with col1:
             age = st.number_input("Age", 15, 60, 25)
             sys_bp = st.number_input("Systolic BP (mmHg)", 60, 200, 120)
             dia_bp = st.number_input("Diastolic BP (mmHg)", 40, 120, 80)
             bs = st.number_input("Blood Sugar (mmol/L)", 3.0, 20.0, 7.0)
             temp = st.number_input("Body Temperature (°F)", 95.0, 105.0, 98.6)
-        
+
         with col2:
             bmi = st.number_input("BMI", 15.0, 50.0, 22.0)
             prev_comp = st.selectbox("Previous Complications", [0, 1])
@@ -287,80 +308,98 @@ elif st.session_state.phase == 2:
     if st.session_state.preeclampsia_result:
         advice = get_advice("preeclampsia", st.session_state.preeclampsia_result["probability"])
         color = "green" if advice["range"] == "low" else "orange" if advice["range"] == "moderate" else "red"
-        
+
         st.markdown(f"## {advice.get('title', 'Result')}")
         st.markdown(f"### Probability: <span style='color:{color}'>{advice['probability']:.1f}%</span>", unsafe_allow_html=True)
-        
+
         if "message" in advice:
             st.markdown(f"**{advice['message']}**")
-        
+
         if "explanation" in advice:
             st.markdown("### 📖 Explanation")
             st.markdown(advice["explanation"])
-        
+
         if "do" in advice:
             st.markdown("### ✅ DO")
             for d in advice["do"]:
                 st.markdown(f"- {d}")
-        
+
         if "dont" in advice:
             st.markdown("### ❌ DON'T")
             for d in advice["dont"]:
                 st.markdown(f"- {d}")
-        
+
         if "immediate_actions" in advice:
             st.markdown("### 🚨 IMMEDIATE ACTIONS")
             for i, a in enumerate(advice["immediate_actions"], 1):
                 st.markdown(f"{i}. {a}")
 
 # ============================================================================
-# CHATBOT SECTION
+# PAGE: AI ASSISTANT
 # ============================================================================
 
-st.markdown("---")
-st.markdown("<h1 style='text-align:center;'>🤖 Maternal Health AI Assistant</h1>", unsafe_allow_html=True)
-st.markdown("---")
+elif menu == "💬 AI Assistant":
+    st.subheader("💬 Ask Maternal Health Assistant")
 
-# Clear chat
-if st.button("🧹 Clear Chat"):
-    st.session_state.messages = []
+    for msg in st.session_state.chat_history:
+        with st.chat_message(msg["role"]):
+            st.markdown(msg["content"])
 
-# ============================================================================
-# DISPLAY CHAT HISTORY
-# ============================================================================
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+    user_input = st.chat_input("Ask about pregnancy, BP, preeclampsia, nutrition...")
 
-# ============================================================================
-# CHAT INPUT
-# ============================================================================
-user_question = st.chat_input("Ask about pregnancy, BP, preeclampsia...")
+    if user_input:
+        st.session_state.chat_history.append({"role": "user", "content": user_input})
 
-if user_question:
+        with st.chat_message("user"):
+            st.markdown(user_input)
 
-    # Save user message
-    st.session_state.messages.append({"role": "user", "content": user_question})
-
-    with st.chat_message("user"):
-        st.markdown(user_question)
-
-    # Emergency check
-    is_emergency = check_medical_emergency(user_question)
-
-    if is_emergency:
-        st.error("⚠️ Emergency detected! Please consult a doctor immediately.")
-
-    # AI response
-    with st.chat_message("assistant"):
-        with st.spinner("Analyzing health query... 🤔"):
+        if check_medical_emergency(user_input):
+            emergency_reply = "⚠️ Emergency detected. Please contact a doctor immediately."
+            st.session_state.chat_history.append({"role": "assistant", "content": emergency_reply})
+            with st.chat_message("assistant"):
+                st.error(emergency_reply)
+        else:
             try:
-                answer = get_chatbot_response(user_question, st.session_state.messages)
+                response = get_chatbot_response(user_input, st.session_state.chat_history)
+                st.session_state.chat_history.append({"role": "assistant", "content": response})
+                with st.chat_message("assistant"):
+                    st.markdown(response)
             except Exception:
-                answer = "Sorry, something went wrong. Please try again."
-                st.error(answer)
+                error_msg = "⚠️ AI service error. Please try again."
+                st.session_state.chat_history.append({"role": "assistant", "content": error_msg})
+                with st.chat_message("assistant"):
+                    st.error(error_msg)
 
-            st.markdown(answer)
+# ============================================================================
+# PAGE: ANALYTICS
+# ============================================================================
 
-    # Save assistant message
-    st.session_state.messages.append({"role": "assistant", "content": answer})
+elif menu == "📈 Analytics":
+    st.title("📊 Risk Analytics")
+
+    maternal_prob = st.session_state.maternal_result["probability"] if st.session_state.maternal_result else None
+    preeclampsia_prob = st.session_state.preeclampsia_result["probability"] if st.session_state.preeclampsia_result else None
+
+    if maternal_prob is None and preeclampsia_prob is None:
+        st.warning("No assessment data available. Please complete at least one assessment first.")
+    else:
+        rows = []
+        if maternal_prob is not None:
+            risk = "Low" if maternal_prob < 40 else "Moderate" if maternal_prob < 70 else "High"
+            rows.append({"Assessment": "Maternal Health", "Probability (%)": round(maternal_prob, 1), "Risk Level": risk})
+        if preeclampsia_prob is not None:
+            risk = "Low" if preeclampsia_prob < 40 else "Moderate" if preeclampsia_prob < 70 else "High"
+            rows.append({"Assessment": "Preeclampsia", "Probability (%)": round(preeclampsia_prob, 1), "Risk Level": risk})
+
+        df = pd.DataFrame(rows)
+
+        st.markdown("### 📋 Assessment Summary")
+        st.dataframe(df, use_container_width=True)
+
+        st.markdown("### 📊 Risk Probability Chart")
+        st.bar_chart(df.set_index("Assessment")["Probability (%)"])
+
+        st.markdown("### 🎯 Risk Level Breakdown")
+        risk_counts = df["Risk Level"].value_counts().reset_index()
+        risk_counts.columns = ["Risk Level", "Count"]
+        st.dataframe(risk_counts, use_container_width=True)

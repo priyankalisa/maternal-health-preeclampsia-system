@@ -1,74 +1,136 @@
-import os
-import google.generativeai as genai
+import streamlit as st
+from google import genai
+import time
+from cache import get_cached_response, set_cache
 
-# Load API key from environment (Render + local safe)
-api_key = os.getenv("GEMINI_API_KEY")
+# =========================
+# API KEY
+# =========================
+API_KEY = st.secrets["GEMINI_API_KEY"]
+client = genai.Client(api_key=API_KEY)
 
-# Safety check: prevent crash if API key missing
-if not api_key:
-    raise ValueError("GEMINI_API_KEY is not set in environment variables")
+# =========================
+# MODELS (SMART ORDER)
+# =========================
+MODEL_PRIORITY = [
+    "gemini-2.5-flash-lite",
+    "gemini-2.0-flash",
+    "gemini-pro-latest"
+]
 
-genai.configure(api_key=api_key)
-
-model = genai.GenerativeModel("gemini-2.5-flash")
-
-
-# ============================================================================
-# 🧠 CHATBOT RESPONSE WITH MEMORY
-# ============================================================================
-def get_chatbot_response(user_query, chat_history):
-
-    # Convert chat history into readable context
-    history_text = ""
-
-    for msg in chat_history:
-        role = "User" if msg["role"] == "user" else "Assistant"
-        history_text += f"{role}: {msg['content']}\n"
-
-    prompt = f"""
-You are a Maternal Health AI Assistant.
-
-Rules:
-- Answer only maternal health topics (pregnancy, BP, preeclampsia, nutrition).
-- Keep answers under 150 words.
-- Be simple and safe.
-- If unrelated, politely refuse.
-- Never provide medical diagnosis.
-- Always encourage consulting a healthcare professional.
-
-Conversation history:
-{history_text}
-
-Current user question:
-{user_query}
-"""
-
-    response = model.generate_content(prompt)
-
-    return response.text
-
-
-# ============================================================================
-# ⚠️ MEDICAL EMERGENCY DETECTION SYSTEM
-# ============================================================================
-def check_medical_emergency(text):
+# =========================
+# EMERGENCY DETECTION (IMPROVED)
+# =========================
+def check_medical_emergency(text: str) -> bool:
     text = text.lower()
 
-    danger_keywords = [
-        "severe headache",
-        "blurred vision",
-        "high bp",
-        "very high blood pressure",
-        "swelling face",
-        "face swelling",
-        "chest pain",
-        "seizure",
-        "shortness of breath",
-        "breathing difficulty",
-        "bleeding",
-        "vaginal bleeding",
-        "reduced fetal movement",
-        "no fetal movement"
+    danger_words = [
+        "bleeding", "seizure", "unconscious", "faint",
+        "no movement", "fits", "convulsion",
+        "severe pain", "chest pain", "emergency",
+        "blurred vision", "high bp crisis"
     ]
 
-    return any(keyword in text for keyword in danger_keywords)
+    return any(word in text for word in danger_words)
+
+# =========================
+# SIMPLE RULE-BASED ANSWERS (NO API = SAVE QUOTA)
+# =========================
+def simple_medical_answers(user_input):
+    text = user_input.lower()
+
+    if "what is preeclampsia" in text:
+        return (
+            "Preeclampsia is a pregnancy condition with high blood pressure "
+            "and possible organ damage after 20 weeks of pregnancy. "
+            "It needs medical monitoring."
+        )
+
+    if "what is hypertension" in text:
+        return (
+            "Hypertension is high blood pressure. In pregnancy, it must be monitored "
+            "to prevent complications like preeclampsia."
+        )
+
+    if "nutrition" in text:
+        return "Eat iron-rich food, fruits, vegetables, and stay hydrated during pregnancy."
+
+    return None
+
+# =========================
+# MAIN CHAT FUNCTION
+# =========================
+def get_chatbot_response(user_input, chat_history=None):
+
+    # =========================
+    # STEP 1: CACHE CHECK
+    # =========================
+    cached = get_cached_response(user_input)
+    if cached:
+        return cached
+
+    # =========================
+    # STEP 2: RULE-BASED ANSWER
+    # =========================
+    simple_answer = simple_medical_answers(user_input)
+    if simple_answer:
+        set_cache(user_input, simple_answer)
+        return simple_answer
+
+    # =========================
+    # STEP 3: BUILD CONTEXT
+    # =========================
+    context = ""
+    if chat_history:
+        for msg in chat_history[-8:]:
+            context += f"{msg['role']}: {msg['content']}\n"
+
+    prompt = f"""
+You are a certified Maternal Health AI Assistant.
+
+Rules:
+- Give safe medical advice
+- Keep answers simple and clear
+- Always recommend doctor for serious symptoms
+- Focus on pregnancy, BP, preeclampsia, nutrition
+
+Conversation:
+{context}
+
+User: {user_input}
+Assistant:
+"""
+
+    # =========================
+    # STEP 4: GEMINI CALL (FALLBACK SYSTEM)
+    # =========================
+    for model in MODEL_PRIORITY:
+        try:
+            response = client.models.generate_content(
+                model=model,
+                contents=prompt
+            )
+
+            if response and hasattr(response, "text"):
+                answer = response.text
+
+                # save cache
+                set_cache(user_input, answer)
+
+                return answer
+
+        except Exception as e:
+            err = str(e)
+
+            # retry logic
+            if "503" in err or "UNAVAILABLE" in err:
+                time.sleep(2)
+                continue
+
+            if "429" in err or "RESOURCE_EXHAUSTED" in err:
+                time.sleep(5)
+                continue
+
+            return f"⚠️ AI Error: {err}"
+
+    return "⚠️ Service busy. Please try again later."
