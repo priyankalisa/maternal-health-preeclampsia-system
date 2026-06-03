@@ -333,27 +333,40 @@ elif menu == "👩‍⚕️ Maternal Check":
 elif menu == "🫀 Preeclampsia Check":
     with st.expander("🫀 Enter Preeclampsia Data", expanded=True):
         col1, col2 = st.columns(2)
-
+ 
         with col1:
             age = st.number_input("Age", 15, 60, 25)
+            gravidity = st.number_input("Gravidity (number of pregnancies)", 0, 20, 1)
+            gestational_age = st.number_input("Gestational Age (weeks)", 1, 42, 20)
+            pre_preg_bmi = st.number_input("Pre-Pregnancy BMI", 10.0, 60.0, 22.0)
             sys_bp = st.number_input("Systolic BP (mmHg)", 60, 200, 120)
             dia_bp = st.number_input("Diastolic BP (mmHg)", 40, 120, 80)
-            bs = st.number_input("Blood Sugar (mmol/L)", 3.0, 20.0, 7.0)
-            temp = st.number_input("Body Temperature (°F)", 95.0, 105.0, 98.6)
-
+ 
         with col2:
-            bmi = st.number_input("BMI", 15.0, 50.0, 22.0)
-            prev_comp = st.selectbox("Previous Complications", [0, 1])
-            pre_diab = st.selectbox("Preexisting Diabetes", [0, 1])
-            gest_diab = st.selectbox("Gestational Diabetes", [0, 1])
-            mental = st.selectbox("Mental Health Issues", [0, 1])
-            hr = st.number_input("Heart Rate (bpm)", 50, 150, 72)
-
+            hemoglobin = st.number_input("Hemoglobin (g/dL)", 5.0, 20.0, 12.0)
+            fasting_glucose = st.number_input("Fasting Glucose (mg/dL)", 50.0, 300.0, 90.0)
+            proteinuria = st.selectbox("Proteinuria", [0, 1], format_func=lambda x: "Yes" if x == 1 else "No")
+            hiv_status = st.selectbox("HIV Status", [0, 1], format_func=lambda x: "Positive" if x == 1 else "Negative")
+            anemia_status = st.selectbox("Anemia Status", ["none", "moderate", "severe"], format_func=lambda x: x.capitalize())
+ 
+        anemia_moderate = 1 if anemia_status == "moderate" else 0
+        anemia_none     = 1 if anemia_status == "none"     else 0
+        anemia_severe   = 1 if anemia_status == "severe"   else 0
+ 
         preeclampsia_data = pd.DataFrame({
-            'Age': [age], 'Systolic BP': [sys_bp], 'Diastolic': [dia_bp],
-            'BS': [bs], 'Body Temp': [temp], 'BMI': [bmi],
-            'Previous Complications': [prev_comp], 'Preexisting Diabetes': [pre_diab],
-            'Gestational Diabetes': [gest_diab], 'Mental Health': [mental], 'Heart Rate': [hr]
+            'Age':                    [age],
+            'Gravidity':              [gravidity],
+            'Gestational_Age_Weeks':  [gestational_age],
+            'Pre_Pregnancy_BMI':      [pre_preg_bmi],
+            'Systolic_BP':            [sys_bp],
+            'Diastolic_BP':           [dia_bp],
+            'Hemoglobin':             [hemoglobin],
+            'Fasting_Glucose':        [fasting_glucose],
+            'Proteinuria':            [proteinuria],
+            'HIV_Status':             [hiv_status],
+            'Anemia_Status_moderate': [anemia_moderate],
+            'Anemia_Status_none':     [anemia_none],
+            'Anemia_Status_severe':   [anemia_severe],
         })
 
     if st.button("🔍 Assess Preeclampsia", type="primary"):
