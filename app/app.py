@@ -262,42 +262,69 @@ if menu == "📊 Dashboard":
 # ============================================================================
 
 elif menu == "👩‍⚕️ Maternal Check":
-    with st.expander("📋 Enter Maternal Health Data", expanded=True):
-        col1, col2 = st.columns(2)
+    st.markdown("### 📋 Maternal Health Assessment Form")
 
-        with col1:
-            age = st.number_input("Age", 15, 60, 25)
-            gravida = st.number_input("Gravida (pregnancies)", 0, 20, 1)
-            titi_tika = st.number_input("TiTi Tika", 0, 10, 0)
-            gestation = st.number_input("Gestation (weeks)", 1, 42, 20)
-            weight = st.number_input("Weight (kg)", 30.0, 200.0, 60.0)
-            height = st.number_input("Height (cm)", 100.0, 220.0, 160.0)
+    # ── Section 1: Basic Info ──────────────────────────────────────────────
+    st.markdown("#### 👤 Basic Information")
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        age = st.number_input("Age (years)", 15, 60, 25)
+    with c2:
+        gravida = st.number_input("Gravida (pregnancies)", 0, 20, 1)
+    with c3:
+        titi_tika = st.number_input("TiTi Tika", 0, 10, 0)
 
-        with col2:
-            anemia = st.selectbox("Anemia", ["None", "Minimal", "Medium"])
-            jaundice = st.selectbox("Jaundice", ["None", "Minimal", "Medium"])
-            fetal_pos = st.selectbox("Fetal Position", ["Normal", "Abnormal"])
-            fetal_hb = st.number_input("Fetal Heart Beat", 80, 200, 140)
-            albumin = st.selectbox("Albumin", ["None", "Minimal", "Medium", "Higher"])
-            blood_sugar = st.selectbox("Blood Sugar", ["Yes", "No"])
+    c4, c5, c6 = st.columns(3)
+    with c4:
+        gestation = st.number_input("Gestation (weeks)", 1, 42, 20)
+    with c5:
+        weight = st.number_input("Weight (kg)", 30.0, 200.0, 60.0)
+    with c6:
+        height = st.number_input("Height (cm)", 100.0, 220.0, 160.0)
 
-        col3, col4 = st.columns(2)
+    st.markdown("---")
 
-        with col3:
-            vdrl = st.selectbox("VDRL", ["Negative", "Positive"])
-            hrsag = st.selectbox("HRsAG", ["Negative", "Positive"])
+    # ── Section 2: Clinical Indicators ────────────────────────────────────
+    st.markdown("#### 🩺 Clinical Indicators")
+    c7, c8, c9 = st.columns(3)
+    with c7:
+        anemia = st.selectbox("Anemia", ["None", "Minimal", "Medium"])
+    with c8:
+        jaundice = st.selectbox("Jaundice", ["None", "Minimal", "Medium"])
+    with c9:
+        albumin = st.selectbox("Albumin", ["None", "Minimal", "Medium", "Higher"])
 
-        with col4:
-            sys_bp = st.number_input("Systolic BP (mmHg)", 60, 200, 120)
-            dia_bp = st.number_input("Diastolic BP (mmHg)", 40, 120, 80)
+    c10, c11, c12 = st.columns(3)
+    with c10:
+        fetal_pos = st.selectbox("Fetal Position", ["Normal", "Abnormal"])
+    with c11:
+        fetal_hb = st.number_input("Fetal Heart Beat (bpm)", 80, 200, 140)
+    with c12:
+        blood_sugar = st.selectbox("Blood Sugar", ["Yes", "No"])
 
-        maternal_data = pd.DataFrame({
-            'Age': [age], 'Gravida': [gravida], 'TiTi Tika': [titi_tika],
-            'Gestation period': [gestation], 'Weight': [weight], 'Height': [height],
-            'Anemia': [anemia], 'Jaundice': [jaundice], 'Fetal position': [fetal_pos],
-            'Fetal heart beat': [fetal_hb], 'Albumin': [albumin], 'Blood sugar': [blood_sugar],
-            'VDRL': [vdrl], 'HRsAG': [hrsag], 'Systolic_BP': [sys_bp], 'Diastolic_BP': [dia_bp]
-        })
+    st.markdown("---")
+
+    # ── Section 3: Tests & BP ──────────────────────────────────────────────
+    st.markdown("#### 🧪 Lab Tests & Blood Pressure")
+    c13, c14, c15, c16 = st.columns(4)
+    with c13:
+        vdrl = st.selectbox("VDRL", ["Negative", "Positive"])
+    with c14:
+        hrsag = st.selectbox("HRsAG", ["Negative", "Positive"])
+    with c15:
+        sys_bp = st.number_input("Systolic BP (mmHg)", 60, 200, 120)
+    with c16:
+        dia_bp = st.number_input("Diastolic BP (mmHg)", 40, 120, 80)
+
+    st.markdown("")
+
+    maternal_data = pd.DataFrame({
+        'Age': [age], 'Gravida': [gravida], 'TiTi Tika': [titi_tika],
+        'Gestation period': [gestation], 'Weight': [weight], 'Height': [height],
+        'Anemia': [anemia], 'Jaundice': [jaundice], 'Fetal position': [fetal_pos],
+        'Fetal heart beat': [fetal_hb], 'Albumin': [albumin], 'Blood sugar': [blood_sugar],
+        'VDRL': [vdrl], 'HRsAG': [hrsag], 'Systolic_BP': [sys_bp], 'Diastolic_BP': [dia_bp]
+    })
 
     if st.button("🔍 Assess Maternal Health", type="primary"):
         with st.spinner("Analyzing maternal health risk..."):
@@ -331,43 +358,73 @@ elif menu == "👩‍⚕️ Maternal Check":
 # ============================================================================
 
 elif menu == "🫀 Preeclampsia Check":
-    with st.expander("🫀 Enter Preeclampsia Data", expanded=True):
-        col1, col2 = st.columns(2)
- 
-        with col1:
-            age = st.number_input("Age", 15, 60, 25)
-            gravidity = st.number_input("Gravidity (number of pregnancies)", 0, 20, 1)
-            gestational_age = st.number_input("Gestational Age (weeks)", 1, 42, 20)
-            pre_preg_bmi = st.number_input("Pre-Pregnancy BMI", 10.0, 60.0, 22.0)
-            sys_bp = st.number_input("Systolic BP (mmHg)", 60, 200, 120)
-            dia_bp = st.number_input("Diastolic BP (mmHg)", 40, 120, 80)
- 
-        with col2:
-            hemoglobin = st.number_input("Hemoglobin (g/dL)", 5.0, 20.0, 12.0)
-            fasting_glucose = st.number_input("Fasting Glucose (mg/dL)", 50.0, 300.0, 90.0)
-            proteinuria = st.selectbox("Proteinuria", [0, 1], format_func=lambda x: "Yes" if x == 1 else "No")
-            hiv_status = st.selectbox("HIV Status", [0, 1], format_func=lambda x: "Positive" if x == 1 else "Negative")
-            anemia_status = st.selectbox("Anemia Status", ["none", "moderate", "severe"], format_func=lambda x: x.capitalize())
- 
-        anemia_moderate = 1 if anemia_status == "moderate" else 0
-        anemia_none     = 1 if anemia_status == "none"     else 0
-        anemia_severe   = 1 if anemia_status == "severe"   else 0
- 
-        preeclampsia_data = pd.DataFrame({
-            'Age':                    [age],
-            'Gravidity':              [gravidity],
-            'Gestational_Age_Weeks':  [gestational_age],
-            'Pre_Pregnancy_BMI':      [pre_preg_bmi],
-            'Systolic_BP':            [sys_bp],
-            'Diastolic_BP':           [dia_bp],
-            'Hemoglobin':             [hemoglobin],
-            'Fasting_Glucose':        [fasting_glucose],
-            'Proteinuria':            [proteinuria],
-            'HIV_Status':             [hiv_status],
-            'Anemia_Status_moderate': [anemia_moderate],
-            'Anemia_Status_none':     [anemia_none],
-            'Anemia_Status_severe':   [anemia_severe],
-        })
+    st.markdown("### 🫀 Preeclampsia Risk Assessment Form")
+
+    # ── Section 1: Patient Profile ─────────────────────────────────────────
+    st.markdown("#### 👤 Patient Profile")
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        age = st.number_input("Age (years)", 15, 60, 25)
+    with c2:
+        gravidity = st.number_input("Gravidity (pregnancies)", 0, 20, 1)
+    with c3:
+        gestational_age = st.number_input("Gestational Age (weeks)", 1, 42, 20)
+
+    st.markdown("---")
+
+    # ── Section 2: Vitals & Measurements ──────────────────────────────────
+    st.markdown("#### 💉 Vitals & Measurements")
+    c4, c5, c6 = st.columns(3)
+    with c4:
+        pre_preg_bmi = st.number_input("Pre-Pregnancy BMI", 10.0, 60.0, 22.0)
+    with c5:
+        sys_bp = st.number_input("Systolic BP (mmHg)", 60, 200, 120)
+    with c6:
+        dia_bp = st.number_input("Diastolic BP (mmHg)", 40, 120, 80)
+
+    st.markdown("---")
+
+    # ── Section 3: Lab Results ─────────────────────────────────────────────
+    st.markdown("#### 🧪 Lab Results")
+    c7, c8 = st.columns(2)
+    with c7:
+        hemoglobin = st.number_input("Hemoglobin (g/dL)", 5.0, 20.0, 12.0)
+    with c8:
+        fasting_glucose = st.number_input("Fasting Glucose (mg/dL)", 50.0, 300.0, 90.0)
+
+    st.markdown("---")
+
+    # ── Section 4: Clinical Flags ──────────────────────────────────────────
+    st.markdown("#### 🚩 Clinical Flags")
+    c9, c10, c11 = st.columns(3)
+    with c9:
+        proteinuria = st.selectbox("Proteinuria", [0, 1], format_func=lambda x: "Yes" if x == 1 else "No")
+    with c10:
+        hiv_status = st.selectbox("HIV Status", [0, 1], format_func=lambda x: "Positive" if x == 1 else "Negative")
+    with c11:
+        anemia_status = st.selectbox("Anemia Status", ["none", "moderate", "severe"], format_func=lambda x: x.capitalize())
+
+    st.markdown("")
+
+    anemia_moderate = 1 if anemia_status == "moderate" else 0
+    anemia_none     = 1 if anemia_status == "none"     else 0
+    anemia_severe   = 1 if anemia_status == "severe"   else 0
+
+    preeclampsia_data = pd.DataFrame({
+        'Age':                    [age],
+        'Gravidity':              [gravidity],
+        'Gestational_Age_Weeks':  [gestational_age],
+        'Pre_Pregnancy_BMI':      [pre_preg_bmi],
+        'Systolic_BP':            [sys_bp],
+        'Diastolic_BP':           [dia_bp],
+        'Hemoglobin':             [hemoglobin],
+        'Fasting_Glucose':        [fasting_glucose],
+        'Proteinuria':            [proteinuria],
+        'HIV_Status':             [hiv_status],
+        'Anemia_Status_moderate': [anemia_moderate],
+        'Anemia_Status_none':     [anemia_none],
+        'Anemia_Status_severe':   [anemia_severe],
+    })
 
     if st.button("🔍 Assess Preeclampsia", type="primary"):
         with st.spinner("Analyzing preeclampsia risk..."):
