@@ -118,6 +118,65 @@ st.set_page_config(
 )
 
 # ============================================================================
+# GLOBAL TEAL THEME
+# ============================================================================
+
+st.markdown("""
+<style>
+/* Page background */
+.stApp { background-color: #F4FCF8; }
+
+/* Sidebar background + right border */
+section[data-testid="stSidebar"] {
+    background-color: #E1F5EE;
+    border-right: 2px solid #0F6E56;
+}
+section[data-testid="stSidebar"] * { color: #085041 !important; }
+
+/* Section headers (####) left-border accent */
+h4 {
+    border-left: 4px solid #0F6E56;
+    padding-left: 10px;
+    border-radius: 0;
+    color: #04342C !important;
+}
+
+/* h3 titles */
+h3 { color: #085041 !important; }
+
+/* Input fields: teal border */
+input[type="number"], input[type="text"], select, textarea {
+    border: 1px solid #9FE1CB !important;
+    border-radius: 6px !important;
+}
+input[type="number"]:focus, input[type="text"]:focus, select:focus {
+    border-color: #0F6E56 !important;
+    box-shadow: 0 0 0 2px #9FE1CB !important;
+}
+
+/* Primary buttons */
+div.stButton > button[kind="primary"] {
+    background-color: #0F6E56 !important;
+    border-color: #0F6E56 !important;
+    color: #E1F5EE !important;
+}
+div.stButton > button[kind="primary"]:hover {
+    background-color: #085041 !important;
+    border-color: #085041 !important;
+}
+
+/* Horizontal rules */
+hr { border-color: #9FE1CB !important; }
+
+/* Streamlit progress bar */
+div[data-testid="stProgressBar"] > div > div { background-color: #0F6E56 !important; }
+
+/* Radio buttons in sidebar */
+div[data-testid="stRadio"] label { color: #085041 !important; }
+</style>
+""", unsafe_allow_html=True)
+
+# ============================================================================
 # SESSION STATE INIT
 # ============================================================================
 
