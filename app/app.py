@@ -618,15 +618,22 @@ elif menu == "🫀 Preeclampsia Check":
             st.markdown("##### 📖 Explanation")
             st.markdown(advice["explanation"])
 
-        if "do" in advice:
-            st.markdown("##### ✅ DO")
-            for d in advice["do"]:
-                st.markdown(f"- {d}")
-
-        if "dont" in advice:
-            st.markdown("##### ❌ DON'T")
-            for d in advice["dont"]:
-                st.markdown(f"- {d}")
+        if "do" in advice or "dont" in advice:
+            do_col, dont_col = st.columns(2)
+            if "do" in advice:
+                do_items = "".join([f"<div style='display:flex;align-items:flex-start;gap:8px;margin-bottom:7px;'><div style='width:6px;height:6px;border-radius:50%;background:#3B6D11;margin-top:5px;flex-shrink:0;'></div><p style='font-size:13px;color:#27500A;margin:0;'>{d}</p></div>" for d in advice["do"]])
+                with do_col:
+                    st.markdown(f"""<div style='background:#EAF3DE;border:0.5px solid #3B6D11;border-radius:var(--border-radius-lg);padding:1.1rem;'>
+                        <p style='font-size:13px;font-weight:500;color:#173404;margin:0 0 10px;'>✅ Do</p>
+                        {do_items}
+                    </div>""", unsafe_allow_html=True)
+            if "dont" in advice:
+                dont_items = "".join([f"<div style='display:flex;align-items:flex-start;gap:8px;margin-bottom:7px;'><div style='width:6px;height:6px;border-radius:50%;background:#A32D2D;margin-top:5px;flex-shrink:0;'></div><p style='font-size:13px;color:#791F1F;margin:0;'>{d}</p></div>" for d in advice["dont"]])
+                with dont_col:
+                    st.markdown(f"""<div style='background:#FCEBEB;border:0.5px solid #A32D2D;border-radius:var(--border-radius-lg);padding:1.1rem;'>
+                        <p style='font-size:13px;font-weight:500;color:#501313;margin:0 0 10px;'>❌ Don't</p>
+                        {dont_items}
+                    </div>""", unsafe_allow_html=True)
 
         if "immediate_actions" in advice:
             st.markdown("##### 🚨 IMMEDIATE ACTIONS")
@@ -638,7 +645,43 @@ elif menu == "🫀 Preeclampsia Check":
 # ============================================================================
 
 elif menu == "💬 AI Assistant":
-    st.subheader("💬 Ask Maternal Health Assistant")
+    st.markdown("""
+<div style='background:var(--color-background-secondary);border-radius:var(--border-radius-lg);
+     padding:1.25rem 1.5rem;margin-bottom:1.25rem;display:flex;align-items:flex-start;gap:14px;'>
+  <div style='width:42px;height:42px;border-radius:50%;background:#E6F1FB;
+       display:flex;align-items:center;justify-content:center;flex-shrink:0;'>
+    🤖
+  </div>
+  <div>
+    <p style='font-size:15px;font-weight:500;margin:0 0 4px;color:var(--color-text-primary);'>Maternal health AI assistant</p>
+    <p style='font-size:13px;color:var(--color-text-secondary);margin:0;'>
+      Ask anything about pregnancy, blood pressure, preeclampsia symptoms, nutrition, or your assessment results.
+    </p>
+  </div>
+</div>
+""", unsafe_allow_html=True)
+
+    st.markdown("<p style='font-size:12px;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:0.06em;margin:0 0 8px;'>Suggested questions</p>", unsafe_allow_html=True)
+
+    suggested = [
+        ("🫀", "What are early signs of preeclampsia?"),
+        ("🥗", "What foods should I avoid during pregnancy?"),
+        ("💧", "How do I manage high blood pressure?"),
+        ("🚨", "When should I visit the doctor urgently?"),
+    ]
+    sq_cols = st.columns(2)
+    for idx, (icon, question) in enumerate(suggested):
+        with sq_cols[idx % 2]:
+            if st.button(f"{icon} {question}", use_container_width=True, key=f"sq_{idx}"):
+                st.session_state.chat_history.append({"role": "user", "content": question})
+                try:
+                    response = get_chatbot_response(question, st.session_state.chat_history)
+                    st.session_state.chat_history.append({"role": "assistant", "content": response})
+                except Exception:
+                    st.session_state.chat_history.append({"role": "assistant", "content": "⚠️ AI service error. Please try again."})
+                st.rerun()
+
+    st.markdown("---")
 
     for msg in st.session_state.chat_history:
         with st.chat_message(msg["role"]):
