@@ -3,93 +3,506 @@
         "maternal_health": {
             "low": 40,
             "moderate": 70,
-            "high": 70
+            "high": 80
         },
         "preeclampsia": {
             "low": 40,
             "moderate": 70,
-            "high": 70
+            "high": 85
         }
     },
     "maternal_health": {
         "low": {
             "title": "✅ LOW RISK PREGNANCY",
-            "message": "Your maternal health assessment shows no high-risk indicators. Keep up the good work with regular prenatal care.",
+            "message": "Your maternal health assessment shows no significant risk indicators. You are on a healthy pregnancy path — keep up the excellent work with your prenatal routine.",
+            "urgency": "routine",
+            "urgency_label": "Routine monitoring",
             "recommendations": [
-                "Continue regular prenatal checkups",
-                "Maintain balanced nutrition",
-                "Stay hydrated",
-                "Get adequate rest"
-            ]
+                "Attend all scheduled prenatal checkups",
+                "Maintain a balanced diet rich in iron, calcium, and folate",
+                "Stay hydrated — aim for 8–10 glasses of water daily",
+                "Get 7–9 hours of sleep each night",
+                "Engage in light physical activity such as walking or prenatal yoga",
+                "Take prescribed prenatal vitamins daily"
+            ],
+            "warning_signs": [
+                "Sudden swelling of hands, face, or feet",
+                "Severe or persistent headaches",
+                "Reduced fetal movement",
+                "Vaginal bleeding or fluid leakage"
+            ],
+            "diet": {
+                "eat": [
+                    "Leafy greens (spinach, fenugreek) for iron and folate",
+                    "Dairy products (milk, paneer, curd) for calcium",
+                    "Lentils and legumes for protein",
+                    "Fresh seasonal fruits for vitamins",
+                    "Whole grains (brown rice, oats) for sustained energy"
+                ],
+                "avoid": [
+                    "Raw or undercooked meat and eggs",
+                    "Unpasteurized dairy products",
+                    "Excessive caffeine (limit to 1 cup/day)",
+                    "High-mercury fish (shark, swordfish)",
+                    "Processed and packaged junk food"
+                ]
+            },
+            "exercise": {
+                "recommended": [
+                    "30-minute walks daily",
+                    "Prenatal yoga 3x per week",
+                    "Swimming or water aerobics",
+                    "Gentle stretching and breathing exercises"
+                ],
+                "avoid": [
+                    "High-impact sports or contact sports",
+                    "Exercises lying flat on back after 20 weeks",
+                    "Heavy weightlifting",
+                    "Activities with fall risk"
+                ]
+            },
+            "trimester_advice": {
+                "1": {
+                    "label": "1st Trimester (Weeks 1–13)",
+                    "focus": "Establishing healthy foundations",
+                    "tips": [
+                        "Start folic acid 400mcg/day immediately to prevent neural tube defects",
+                        "Schedule your first prenatal visit and blood tests",
+                        "Manage morning sickness with small frequent meals and ginger tea",
+                        "Avoid alcohol, tobacco, and unprescribed medications entirely",
+                        "Get a dental checkup — hormonal changes affect gum health"
+                    ]
+                },
+                "2": {
+                    "label": "2nd Trimester (Weeks 14–27)",
+                    "focus": "Growth and monitoring",
+                    "tips": [
+                        "Track fetal movements from week 18–20 onwards",
+                        "Complete the anomaly scan (18–20 weeks) as scheduled",
+                        "Begin pelvic floor (Kegel) exercises",
+                        "Discuss birth plan options with your doctor",
+                        "Monitor weight gain — aim for 0.3–0.5 kg/week"
+                    ]
+                },
+                "3": {
+                    "label": "3rd Trimester (Weeks 28–42)",
+                    "focus": "Preparing for delivery",
+                    "tips": [
+                        "Attend weekly or bi-weekly check-ups as advised",
+                        "Monitor fetal kick counts daily (at least 10 kicks in 2 hours)",
+                        "Prepare hospital bag and birth plan",
+                        "Learn warning signs of preterm labor",
+                        "Rest on your left side to improve blood flow to baby"
+                    ]
+                }
+            }
         },
         "moderate": {
             "title": "⚠️ MODERATE RISK PREGNANCY",
-            "message": "Some risk factors have been detected. Increased monitoring is recommended.",
+            "message": "Some risk indicators have been identified. Increased vigilance and more frequent monitoring are recommended to ensure both your and your baby's safety.",
+            "urgency": "monitor",
+            "urgency_label": "Increased monitoring needed",
             "recommendations": [
-                "Increase prenatal visit frequency",
-                "Monitor blood pressure regularly",
-                "Track weight gain",
-                "Report any unusual symptoms immediately"
-            ]
+                "Increase prenatal visit frequency to every 2 weeks",
+                "Monitor blood pressure at home twice daily",
+                "Track weight gain weekly",
+                "Report any unusual symptoms to your doctor within 24 hours",
+                "Maintain a symptom diary",
+                "Reduce physical exertion and get more rest"
+            ],
+            "warning_signs": [
+                "Blood pressure reading ≥ 140/90 mmHg",
+                "Persistent headaches not relieved by rest",
+                "Sudden swelling of face, hands, or ankles",
+                "Blurred or double vision",
+                "Pain below the ribs on the right side",
+                "Sudden weight gain of more than 1 kg in a week"
+            ],
+            "diet": {
+                "eat": [
+                    "Low-sodium foods to manage blood pressure",
+                    "Potassium-rich foods (banana, coconut water, sweet potato)",
+                    "Magnesium-rich foods (almonds, dark chocolate, whole grains)",
+                    "High-protein meals (eggs, lentils, lean meat) to protect kidneys",
+                    "Fresh vegetables and fruits for antioxidants"
+                ],
+                "avoid": [
+                    "Excess salt and pickled/processed foods",
+                    "Fried and fast foods",
+                    "Sugary beverages and sweets",
+                    "Caffeine and energy drinks",
+                    "Alcohol entirely"
+                ]
+            },
+            "exercise": {
+                "recommended": [
+                    "Gentle 20-minute walks on flat surfaces",
+                    "Light prenatal stretching",
+                    "Breathing and relaxation exercises",
+                    "Prenatal yoga (gentle, non-inverted poses only)"
+                ],
+                "avoid": [
+                    "Any strenuous or high-intensity exercise",
+                    "Standing for prolonged periods",
+                    "Exercises with sudden movements or jumps",
+                    "Exercise in hot or humid environments"
+                ]
+            },
+            "trimester_advice": {
+                "1": {
+                    "label": "1st Trimester (Weeks 1–13)",
+                    "focus": "Early risk identification",
+                    "tips": [
+                        "Inform your doctor of all risk factors (family history, prior complications) at the first visit",
+                        "Begin low-dose aspirin only if recommended by your doctor",
+                        "Get a full blood panel including thyroid function",
+                        "Manage nausea carefully — dehydration worsens risk factors",
+                        "Avoid over-the-counter medications without doctor approval"
+                    ]
+                },
+                "2": {
+                    "label": "2nd Trimester (Weeks 14–27)",
+                    "focus": "Active monitoring",
+                    "tips": [
+                        "Complete detailed anatomy scan and cervical length check",
+                        "Begin home blood pressure log — record morning and evening readings",
+                        "Reduce work stress and increase rest periods during the day",
+                        "Discuss corticosteroid therapy with your doctor if preterm risk exists",
+                        "Track urine protein — use dipstick tests at home if advised"
+                    ]
+                },
+                "3": {
+                    "label": "3rd Trimester (Weeks 28–42)",
+                    "focus": "Intensive monitoring and delivery planning",
+                    "tips": [
+                        "Visit your doctor every 1–2 weeks or as directed",
+                        "Monitor fetal kick counts diligently",
+                        "Discuss induction timeline and delivery method with your doctor",
+                        "Avoid travel, especially by air, after 32 weeks",
+                        "Prepare an emergency contact list and know your nearest hospital"
+                    ]
+                }
+            }
         },
         "high": {
             "title": "🚨 HIGH RISK PREGNANCY",
-            "message": "Elevated risk factors have been detected. Proceeding to detailed preeclampsia assessment...",
+            "message": "Elevated risk factors have been detected. Immediate medical consultation and detailed preeclampsia screening are essential. Please do not delay seeking care.",
+            "urgency": "urgent",
+            "urgency_label": "Urgent medical attention required",
+            "proceed_to_phase2": true,
             "recommendations": [
-                "Contact your healthcare provider immediately",
-                "Schedule urgent follow-up appointment",
-                "Monitor symptoms closely at home"
+                "Contact your healthcare provider TODAY",
+                "Do not wait for your next scheduled appointment",
+                "Go to emergency if you have severe headache, vision changes, or chest pain",
+                "Complete bed rest until assessed by a doctor",
+                "Avoid salt, stress, and physical exertion entirely"
             ],
-            "proceed_to_phase2": true
+            "warning_signs": [
+                "Blood pressure ≥ 160/110 mmHg — EMERGENCY",
+                "Severe headache that won't go away",
+                "Vision changes: blurring, flashes, double vision",
+                "Sudden severe swelling of face and hands",
+                "Upper right abdominal pain",
+                "Difficulty breathing or chest tightness",
+                "Reduced or absent fetal movements"
+            ],
+            "diet": {
+                "eat": [
+                    "Small, frequent meals every 2–3 hours",
+                    "High-protein foods (eggs, paneer, dal) to support kidney function",
+                    "Antioxidant-rich foods (berries, tomatoes, broccoli)",
+                    "Calcium-rich foods (dairy, tofu, sesame seeds)",
+                    "Plenty of fluids — water and coconut water"
+                ],
+                "avoid": [
+                    "All added salt and sodium-heavy foods",
+                    "Preserved, canned, or packaged foods",
+                    "Spicy and oily foods",
+                    "Caffeine, soft drinks, and alcohol",
+                    "Heavy meals that strain digestion"
+                ]
+            },
+            "exercise": {
+                "recommended": [
+                    "Complete bed rest or minimal movement as advised by doctor",
+                    "Gentle leg exercises while lying down to prevent clots",
+                    "Slow, calm breathing exercises",
+                    "Position changes every 1–2 hours to improve circulation"
+                ],
+                "avoid": [
+                    "All forms of aerobic or strenuous exercise",
+                    "Standing for more than a few minutes",
+                    "Lifting anything heavier than 1–2 kg",
+                    "Stress-inducing activities or emotional strain"
+                ]
+            },
+            "trimester_advice": {
+                "1": {
+                    "label": "1st Trimester (Weeks 1–13)",
+                    "focus": "Immediate specialist referral",
+                    "tips": [
+                        "Request an urgent referral to a maternal-fetal medicine (MFM) specialist",
+                        "Begin low-dose aspirin (75–150mg) if not already prescribed — proven to reduce preeclampsia risk",
+                        "Get a full kidney function panel, liver enzymes, and urine protein test",
+                        "Inform all family members of your high-risk status",
+                        "Arrange for home nursing support or caregiver assistance"
+                    ]
+                },
+                "2": {
+                    "label": "2nd Trimester (Weeks 14–27)",
+                    "focus": "Specialist-led care",
+                    "tips": [
+                        "MFM specialist visits every 1–2 weeks minimum",
+                        "Uterine artery Doppler ultrasound to assess placental blood flow",
+                        "24-hour urine protein collection test may be required",
+                        "Begin planning for potential preterm delivery if risk escalates",
+                        "Corticosteroids may be prescribed to mature fetal lungs — discuss with doctor"
+                    ]
+                },
+                "3": {
+                    "label": "3rd Trimester (Weeks 28–42)",
+                    "focus": "Hospital-based monitoring",
+                    "tips": [
+                        "Hospital admission may be required for intensive monitoring",
+                        "Non-stress tests (NST) twice weekly minimum",
+                        "Delivery may be recommended before 37 weeks — discuss risks and benefits",
+                        "Have your emergency bag packed and hospital route planned",
+                        "Know your magnesium sulfate and antihypertensive medication instructions"
+                    ]
+                }
+            }
         }
     },
     "preeclampsia": {
         "low": {
             "title": "✅ PREECLAMPSIA RISK: LOW",
-            "message": "Your assessment shows minimal indicators for preeclampsia. Continue routine prenatal care.",
-            "recommendations": [
-                "Continue routine prenatal care",
-                "Maintain healthy lifestyle",
-                "Regular blood pressure monitoring"
-            ]
+            "message": "Your assessment shows minimal indicators for preeclampsia. Continue routine prenatal care with your healthcare team.",
+            "urgency": "routine",
+            "urgency_label": "Routine monitoring",
+            "explanation": "Low preeclampsia risk means your blood pressure, protein levels, and other markers are within normal range. Continue attending all scheduled check-ups to maintain this status throughout pregnancy.",
+            "do": [
+                "Attend all routine prenatal appointments",
+                "Monitor blood pressure at home weekly",
+                "Maintain healthy weight gain as advised",
+                "Stay active with light exercise",
+                "Take prescribed prenatal supplements",
+                "Stay well-hydrated throughout the day"
+            ],
+            "dont": [
+                "Skip prenatal appointments even if feeling well",
+                "Ignore sudden swelling or headaches",
+                "Self-medicate without doctor approval",
+                "Consume high-salt or processed foods",
+                "Smoke or consume alcohol"
+            ],
+            "diet": {
+                "eat": [
+                    "Calcium-rich foods (dairy, fortified plant milks)",
+                    "Magnesium-rich foods (nuts, seeds, whole grains)",
+                    "Omega-3 fatty acids (fatty fish, flaxseeds, walnuts)",
+                    "Fresh fruits and vegetables high in vitamin C and E",
+                    "Adequate protein to support placental health"
+                ],
+                "avoid": [
+                    "Excess sodium — limit to 1500–2300mg/day",
+                    "Processed and fast foods",
+                    "Sugary snacks and sweetened drinks",
+                    "Excessive caffeine"
+                ]
+            },
+            "trimester_advice": {
+                "1": {
+                    "label": "1st Trimester (Weeks 1–13)",
+                    "focus": "Baseline establishment",
+                    "tips": [
+                        "Record your baseline blood pressure for future comparison",
+                        "Ensure folic acid and vitamin D supplementation is started",
+                        "Avoid environmental toxins — secondhand smoke, chemical exposure",
+                        "Discuss family history of preeclampsia with your doctor",
+                        "Get a baseline kidney function and urine protein test"
+                    ]
+                },
+                "2": {
+                    "label": "2nd Trimester (Weeks 14–27)",
+                    "focus": "Preventive monitoring",
+                    "tips": [
+                        "Complete the mid-pregnancy anatomy scan and placenta check",
+                        "Begin tracking blood pressure readings at home",
+                        "Increase dietary calcium to 1000mg/day",
+                        "Report any new swelling or visual changes immediately",
+                        "Discuss aspirin therapy with your doctor as a preventive measure"
+                    ]
+                },
+                "3": {
+                    "label": "3rd Trimester (Weeks 28–42)",
+                    "focus": "Vigilant watch",
+                    "tips": [
+                        "Blood pressure check at every visit — do not miss any",
+                        "Watch for rapid weight gain (more than 1kg in a week)",
+                        "Monitor urine for protein using dipstick if prescribed",
+                        "Know when to go to the emergency room immediately",
+                        "Discuss your delivery plan and expected timing with your doctor"
+                    ]
+                }
+            }
         },
         "moderate": {
             "title": "⚠️ PREECLAMPSIA RISK: MODERATE",
-            "message": "Some indicators suggest elevated risk. Close monitoring recommended.",
+            "message": "Some indicators suggest elevated risk for preeclampsia. Close monitoring and lifestyle adjustments are essential to prevent escalation.",
+            "urgency": "monitor",
+            "urgency_label": "Close monitoring required",
+            "explanation": "Moderate preeclampsia risk means one or more markers — blood pressure, protein levels, or clinical factors — are outside the ideal range. With proper care and monitoring, many moderate-risk cases are successfully managed without complications.",
             "do": [
-                "Monitor blood pressure closely",
-                "Reduce sodium intake",
-                "Increase water intake",
-                "Track symptoms daily"
+                "Monitor blood pressure twice daily — morning and evening",
+                "Reduce sodium intake to under 1500mg/day",
+                "Increase water intake to 10+ glasses daily",
+                "Track symptoms in a daily diary",
+                "Rest on your left side for at least 1 hour after meals",
+                "Take all prescribed medications without skipping",
+                "Attend prenatal visits every 1–2 weeks"
             ],
             "dont": [
-                "Skip prenatal appointments",
-                "Consume high-salt foods",
-                "Ignore headaches or swelling"
-            ]
+                "Skip prenatal appointments or blood pressure checks",
+                "Consume high-salt, pickled, or processed foods",
+                "Ignore persistent headaches or sudden swelling",
+                "Engage in strenuous physical activity",
+                "Stand or sit for prolonged periods without leg elevation",
+                "Self-adjust medication dosages"
+            ],
+            "diet": {
+                "eat": [
+                    "Low-sodium whole foods — cook from scratch when possible",
+                    "Potassium-rich foods to balance BP (bananas, avocados, sweet potatoes)",
+                    "Lean protein (fish, eggs, lentils) to maintain albumin levels",
+                    "High-fiber foods for gut health and weight management",
+                    "Calcium-fortified foods or supplements as prescribed"
+                ],
+                "avoid": [
+                    "Table salt, pickles, papads, canned soups",
+                    "High-sugar desserts and sweetened beverages",
+                    "Fried and oily snacks",
+                    "Red meat in excess",
+                    "Caffeine over 100mg/day"
+                ]
+            },
+            "trimester_advice": {
+                "1": {
+                    "label": "1st Trimester (Weeks 1–13)",
+                    "focus": "Early intervention",
+                    "tips": [
+                        "Begin low-dose aspirin (75–150mg/day) if prescribed — strongest evidence for prevention",
+                        "Start calcium supplementation (1000–1500mg/day) if dietary intake is low",
+                        "Get full baseline labs: renal function, liver enzymes, CBC, urine protein",
+                        "Avoid NSAIDs (ibuprofen, naproxen) — harmful in pregnancy",
+                        "Inform your employer of your at-risk status if physical work is involved"
+                    ]
+                },
+                "2": {
+                    "label": "2nd Trimester (Weeks 14–27)",
+                    "focus": "Active management",
+                    "tips": [
+                        "Uterine artery Doppler at 20–24 weeks to assess placental blood flow",
+                        "24-hour urine collection may be ordered to quantify protein loss",
+                        "Home BP log every morning and evening — share readings at each visit",
+                        "Discuss antihypertensive therapy options with your doctor if BP rises",
+                        "Fetal growth scan every 4 weeks to monitor baby's development"
+                    ]
+                },
+                "3": {
+                    "label": "3rd Trimester (Weeks 28–42)",
+                    "focus": "Delivery planning",
+                    "tips": [
+                        "Non-stress tests (NST) weekly from 34 weeks onwards",
+                        "Delivery at 37–38 weeks may be recommended — discuss pros and cons",
+                        "Know the emergency signs that require immediate hospitalization",
+                        "Have a clear plan for who will accompany you and transport options",
+                        "Postpartum BP monitoring is essential — preeclampsia can develop after delivery too"
+                    ]
+                }
+            }
         },
         "high": {
             "title": "🚨 HIGH RISK: PREECLAMPSIA DETECTED",
-            "message": "Your profile shows strong indicators for preeclampsia. Immediate medical attention recommended.",
-            "explanation": "Preeclampsia is a serious condition that affects blood pressure and organ function. Early detection and management are crucial for safe outcomes.",
+            "message": "Your profile shows strong indicators for preeclampsia. Immediate medical attention is required. Please contact your doctor or go to the emergency room without delay.",
+            "urgency": "emergency",
+            "urgency_label": "EMERGENCY — Seek care immediately",
+            "explanation": "Preeclampsia is a serious pregnancy complication characterised by high blood pressure, protein in urine, and potential organ damage. If left untreated it can progress to eclampsia (seizures), HELLP syndrome, placental abruption, or stillbirth. The only definitive cure is delivery, but expert management before delivery is critical.",
             "do": [
-                "Monitor blood pressure daily",
-                "Rest on your left side",
-                "Schedule immediate doctor follow-up",
-                "Keep a symptom diary"
+                "Go to hospital or emergency room TODAY — do not wait",
+                "Monitor blood pressure every 4–6 hours at home until you can see a doctor",
+                "Rest completely on your left side",
+                "Schedule an urgent appointment within 24 hours at minimum",
+                "Take all prescribed antihypertensive medications as directed",
+                "Keep a symptom diary with time-stamps",
+                "Have someone with you at all times"
             ],
             "dont": [
-                "Engage in strenuous exercise",
-                "Ignore severe headaches",
-                "Skip medication doses",
-                "Consume processed foods"
+                "Engage in any physical activity beyond minimal movement",
+                "Ignore severe headaches, vision changes, or chest pain — these are emergencies",
+                "Skip medication doses under any circumstances",
+                "Consume processed foods, salt, or sodium-heavy meals",
+                "Drive yourself — arrange for someone else to drive",
+                "Delay care hoping symptoms will resolve on their own"
             ],
+            "diet": {
+                "eat": [
+                    "Bland, low-sodium home-cooked meals only",
+                    "Small portions every 2–3 hours — large meals raise BP",
+                    "High-protein foods to protect kidney and liver function",
+                    "Calcium-rich foods or supplements as prescribed",
+                    "Plenty of water and oral rehydration fluids if sweating or vomiting"
+                ],
+                "avoid": [
+                    "All added salt — use herbs and lemon instead",
+                    "Preserved, canned, or restaurant food entirely",
+                    "Caffeine, carbonated drinks, and alcohol",
+                    "Spicy, oily, or hard-to-digest foods",
+                    "Skipping meals — hypoglycaemia worsens outcomes"
+                ]
+            },
             "immediate_actions": [
-                "Contact your doctor within 24 hours",
-                "Consider getting a home blood pressure monitor",
-                "Watch for symptoms: severe headaches, vision changes, upper abdominal pain, swelling",
-                "Prepare for possible hospital monitoring"
-            ]
+                "Call your doctor or midwife right now and describe your symptoms",
+                "If BP ≥ 160/110 or you have severe symptoms — go to emergency room immediately",
+                "Take prescribed antihypertensive medication if available and advised",
+                "Lie on your left side and avoid sudden movements",
+                "Have someone stay with you and monitor your condition",
+                "Bring your prenatal records and medication list to the hospital"
+            ],
+            "trimester_advice": {
+                "1": {
+                    "label": "1st Trimester (Weeks 1–13)",
+                    "focus": "Urgent specialist referral",
+                    "tips": [
+                        "Immediate referral to maternal-fetal medicine (MFM) specialist — do not delay",
+                        "Begin low-dose aspirin today if not already prescribed",
+                        "Full renal and hepatic function panel, CBC, and coagulation studies required",
+                        "Discuss early pregnancy termination risks vs. continuation risks with specialist",
+                        "Arrange for daily home nursing visits or hospital day-care monitoring"
+                    ]
+                },
+                "2": {
+                    "label": "2nd Trimester (Weeks 14–27)",
+                    "focus": "Hospital-level management",
+                    "tips": [
+                        "Hospital admission is strongly advised for intensive monitoring",
+                        "Biophysical profile (BPP) and Doppler flows weekly minimum",
+                        "Corticosteroid injections to mature fetal lungs if preterm delivery anticipated",
+                        "Magnesium sulfate prophylaxis may be started — do not refuse",
+                        "Delivery decision before 34 weeks must balance fetal maturity vs. maternal risk"
+                    ]
+                },
+                "3": {
+                    "label": "3rd Trimester (Weeks 28–42)",
+                    "focus": "Imminent delivery management",
+                    "tips": [
+                        "Delivery is the treatment — your doctor will advise the earliest safe timing",
+                        "Non-stress tests daily or twice daily in hospital",
+                        "Magnesium sulfate infusion during labour to prevent eclampsia",
+                        "C-section may be necessary — consent and preparation in advance",
+                        "Postpartum monitoring for at least 72 hours — BP can spike after delivery"
+                    ]
+                }
+            }
         }
     }
 }

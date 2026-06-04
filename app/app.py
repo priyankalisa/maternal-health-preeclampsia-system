@@ -601,11 +601,14 @@ elif menu == "👩‍⚕️ Maternal Check":
         with st.spinner("Analyzing maternal health risk..."):
             model = load_model("maternal_health_model")
             prob  = model.predict_proba(maternal_data)[0][1] * 100
-            st.session_state.maternal_result = {"probability": prob}
+            st.session_state.maternal_result = {"probability": prob, "gestation": gestation}
 
     if st.session_state.maternal_result:
-        advice = get_advice("maternal_health", st.session_state.maternal_result["probability"])
-        prob   = advice["probability"]
+        advice   = get_advice("maternal_health", st.session_state.maternal_result["probability"])
+        prob     = advice["probability"]
+        # Use live slider value so trimester tabs update immediately if user adjusts gestation
+        gest_wks = gestation
+        trimester_key = "1" if gest_wks <= 13 else "2" if gest_wks <= 27 else "3"
 
         if advice["range"] == "low":
             bg, bc, tc, bar_bg, icon = "#EAF3DE", "#3B6D11", "#173404", "#C0DD97", "✅"
@@ -614,12 +617,22 @@ elif menu == "👩‍⚕️ Maternal Check":
         else:
             bg, bc, tc, bar_bg, icon = "#FCEBEB", "#A32D2D", "#501313", "#F7C1C1", "🚨"
 
-        # IMPROVEMENT #1 — Risk pill in result card
+        # Urgency badge colours
+        urgency = advice.get("urgency", "routine")
+        if urgency == "routine":
+            urg_bg, urg_tc = "#EAF3DE", "#27500A"
+        elif urgency == "monitor":
+            urg_bg, urg_tc = "#FAEEDA", "#633806"
+        else:
+            urg_bg, urg_tc = "#FCEBEB", "#791F1F"
+
+        # ── Result header card ──────────────────────────────────────────────
         st.markdown(f"""<div style='background:{bg};border:1px solid {bc};border-radius:12px;padding:1.5rem;margin:1rem 0;'>
             <div style='display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;'>
                 <div>
                     <p style='font-size:11px;color:{bc};margin:0 0 2px;text-transform:uppercase;letter-spacing:0.05em;'>Maternal Health Assessment</p>
                     <p style='font-size:17px;font-weight:600;margin:0;color:{tc};'>{icon} {advice.get("title", "Result")}</p>
+                    <span style='display:inline-block;margin-top:6px;background:{urg_bg};color:{urg_tc};border-radius:99px;padding:3px 10px;font-size:11px;font-weight:500;'>{advice.get("urgency_label","")}</span>
                 </div>
                 <div style='text-align:right;'>
                     <p style='font-size:36px;font-weight:700;margin:0;color:{tc};'>{prob:.1f}%</p>
@@ -635,13 +648,83 @@ elif menu == "👩‍⚕️ Maternal Check":
             </div>
         </div>""", unsafe_allow_html=True)
 
+        # ── Recommendations ─────────────────────────────────────────────────
         if "recommendations" in advice:
             st.markdown("##### 📋 Recommendations")
             for r in advice["recommendations"]:
                 st.markdown(f"- {r}")
 
+        st.markdown("---")
+
+        # ── Warning Signs — only for moderate/high ──────────────────────────
+        if "warning_signs" in advice and advice["range"] in ("moderate", "high"):
+            ws_items = "".join([
+                f"<div style='display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;'>"
+                f"<span style='color:#A32D2D;font-size:14px;flex-shrink:0;'>⚠</span>"
+                f"<p style='font-size:13px;color:#501313;margin:0;'>{w}</p></div>"
+                for w in advice["warning_signs"]
+            ])
+            st.markdown(f"""<div style='background:#FCEBEB;border:0.5px solid #F7C1C1;border-radius:10px;padding:1.1rem;margin-bottom:1rem;'>
+                <p style='font-size:13px;font-weight:600;color:#791F1F;margin:0 0 10px;'>🚨 Warning Signs — Seek Care Immediately If You Notice:</p>
+                {ws_items}
+            </div>""", unsafe_allow_html=True)
+
+        # ── Diet & Exercise ─────────────────────────────────────────────────
+        if "diet" in advice or "exercise" in advice:
+            diet_col, ex_col = st.columns(2)
+            if "diet" in advice:
+                with diet_col:
+                    eat_items  = "".join([f"<div style='display:flex;gap:7px;margin-bottom:5px;'><span style='color:#3B6D11;'>✔</span><p style='font-size:12px;color:#27500A;margin:0;'>{i}</p></div>" for i in advice["diet"]["eat"]])
+                    avoid_items = "".join([f"<div style='display:flex;gap:7px;margin-bottom:5px;'><span style='color:#A32D2D;'>✖</span><p style='font-size:12px;color:#501313;margin:0;'>{i}</p></div>" for i in advice["diet"]["avoid"]])
+                    st.markdown(f"""<div style='background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:1.1rem;'>
+                        <p style='font-size:13px;font-weight:600;color:var(--color-text-primary);margin:0 0 10px;'>🥗 Diet Guidance</p>
+                        <p style='font-size:11px;font-weight:500;color:#3B6D11;margin:0 0 6px;text-transform:uppercase;'>Eat</p>
+                        {eat_items}
+                        <p style='font-size:11px;font-weight:500;color:#A32D2D;margin:10px 0 6px;text-transform:uppercase;'>Avoid</p>
+                        {avoid_items}
+                    </div>""", unsafe_allow_html=True)
+            if "exercise" in advice:
+                with ex_col:
+                    rec_items  = "".join([f"<div style='display:flex;gap:7px;margin-bottom:5px;'><span style='color:#3B6D11;'>✔</span><p style='font-size:12px;color:#27500A;margin:0;'>{i}</p></div>" for i in advice["exercise"]["recommended"]])
+                    avoid_items = "".join([f"<div style='display:flex;gap:7px;margin-bottom:5px;'><span style='color:#A32D2D;'>✖</span><p style='font-size:12px;color:#501313;margin:0;'>{i}</p></div>" for i in advice["exercise"]["avoid"]])
+                    st.markdown(f"""<div style='background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:1.1rem;'>
+                        <p style='font-size:13px;font-weight:600;color:var(--color-text-primary);margin:0 0 10px;'>🏃 Exercise Guidance</p>
+                        <p style='font-size:11px;font-weight:500;color:#3B6D11;margin:0 0 6px;text-transform:uppercase;'>Recommended</p>
+                        {rec_items}
+                        <p style='font-size:11px;font-weight:500;color:#A32D2D;margin:10px 0 6px;text-transform:uppercase;'>Avoid</p>
+                        {avoid_items}
+                    </div>""", unsafe_allow_html=True)
+
+        st.markdown("")
+
+        # ── Trimester-specific advice ───────────────────────────────────────
+        if "trimester_advice" in advice:
+            tri_data = advice["trimester_advice"][trimester_key]
+            tri_tabs = st.tabs(["🌱 1st Trimester", "🌿 2nd Trimester", "🍀 3rd Trimester"])
+            for t_idx, t_key in enumerate(["1", "2", "3"]):
+                t = advice["trimester_advice"][t_key]
+                active = t_key == trimester_key
+                with tri_tabs[t_idx]:
+                    focus_bg = bg if active else "var(--color-background-secondary)"
+                    focus_bc = bc if active else "var(--color-border-tertiary)"
+                    focus_tc = tc if active else "var(--color-text-secondary)"
+                    badge = f"<span style='background:{bg};color:{tc};border-radius:99px;padding:2px 8px;font-size:10px;font-weight:600;margin-left:8px;'>Current</span>" if active else ""
+                    dot_color = bc if active else "#9FE1CB"
+                    tip_items = "".join([
+                        f"<div style='display:flex;align-items:flex-start;gap:8px;margin-bottom:7px;'>"
+                        f"<div style='width:6px;height:6px;border-radius:50%;background:{dot_color};margin-top:5px;flex-shrink:0;'></div>"
+                        f"<p style='font-size:13px;color:var(--color-text-primary);margin:0;'>{tip}</p></div>"
+                        for tip in t["tips"]
+                    ])
+                    st.markdown(f"""<div style='background:{focus_bg};border:1px solid {focus_bc};border-radius:10px;padding:1.1rem;margin-top:8px;'>
+                        <p style='font-size:13px;font-weight:600;color:{focus_tc};margin:0 0 4px;'>{t["label"]}{badge}</p>
+                        <p style='font-size:11px;color:var(--color-text-tertiary);margin:0 0 10px;'>Focus: {t["focus"]}</p>
+                        {tip_items}
+                    </div>""", unsafe_allow_html=True)
+
         if should_proceed_to_phase2(prob):
-            st.warning("⚠️ High risk factors detected!")
+            risk_label = "High risk" if advice["range"] == "high" else "Moderate risk"
+            st.warning(f"⚠️ {risk_label} detected — Preeclampsia screening is recommended.")
             if st.button("➡️ Continue to Preeclampsia Assessment"):
                 st.session_state.menu_index = MENU_OPTIONS.index("🫀 Preeclampsia Check")
                 st.rerun()
@@ -741,11 +824,14 @@ elif menu == "🫀 Preeclampsia Check":
         with st.spinner("Analyzing preeclampsia risk..."):
             model = load_model("preeclampsia_model")
             prob  = model.predict_proba(preeclampsia_data)[0][1] * 100
-            st.session_state.preeclampsia_result = {"probability": prob}
+            st.session_state.preeclampsia_result = {"probability": prob, "gestation": gestational_age}
 
     if st.session_state.preeclampsia_result:
-        advice = get_advice("preeclampsia", st.session_state.preeclampsia_result["probability"])
-        prob   = advice["probability"]
+        advice   = get_advice("preeclampsia", st.session_state.preeclampsia_result["probability"])
+        prob     = advice["probability"]
+        # Use live slider value so trimester tabs update immediately if user adjusts gestational age
+        gest_wks = gestational_age
+        trimester_key = "1" if gest_wks <= 13 else "2" if gest_wks <= 27 else "3"
 
         if advice["range"] == "low":
             bg, bc, tc, bar_bg, icon = "#EAF3DE", "#3B6D11", "#173404", "#C0DD97", "✅"
@@ -754,12 +840,21 @@ elif menu == "🫀 Preeclampsia Check":
         else:
             bg, bc, tc, bar_bg, icon = "#FCEBEB", "#A32D2D", "#501313", "#F7C1C1", "🚨"
 
-        # IMPROVEMENT #1 — Risk pill in result card
+        urgency = advice.get("urgency", "routine")
+        if urgency == "routine":
+            urg_bg, urg_tc = "#EAF3DE", "#27500A"
+        elif urgency == "monitor":
+            urg_bg, urg_tc = "#FAEEDA", "#633806"
+        else:
+            urg_bg, urg_tc = "#FCEBEB", "#791F1F"
+
+        # ── Result header card ──────────────────────────────────────────────
         st.markdown(f"""<div style='background:{bg};border:1px solid {bc};border-radius:12px;padding:1.5rem;margin:1rem 0;'>
             <div style='display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;'>
                 <div>
                     <p style='font-size:11px;color:{bc};margin:0 0 2px;text-transform:uppercase;letter-spacing:0.05em;'>Preeclampsia Assessment</p>
                     <p style='font-size:17px;font-weight:600;margin:0;color:{tc};'>{icon} {advice.get("title", "Result")}</p>
+                    <span style='display:inline-block;margin-top:6px;background:{urg_bg};color:{urg_tc};border-radius:99px;padding:3px 10px;font-size:11px;font-weight:500;'>{advice.get("urgency_label","")}</span>
                 </div>
                 <div style='text-align:right;'>
                     <p style='font-size:36px;font-weight:700;margin:0;color:{tc};'>{prob:.1f}%</p>
@@ -775,10 +870,14 @@ elif menu == "🫀 Preeclampsia Check":
             </div>
         </div>""", unsafe_allow_html=True)
 
+        # ── Explanation ─────────────────────────────────────────────────────
         if "explanation" in advice:
-            st.markdown("##### 📖 Explanation")
+            st.markdown("##### 📖 What This Means")
             st.markdown(advice["explanation"])
 
+        st.markdown("---")
+
+        # ── Do / Don't ──────────────────────────────────────────────────────
         if "do" in advice or "dont" in advice:
             do_col, dont_col = st.columns(2)
             if "do" in advice:
@@ -795,11 +894,73 @@ elif menu == "🫀 Preeclampsia Check":
                         <p style='font-size:13px;font-weight:500;color:#501313;margin:0 0 10px;'>❌ Don't</p>
                         {dont_items}
                     </div>""", unsafe_allow_html=True)
+            st.markdown("")
 
+        # ── Diet & Exercise ─────────────────────────────────────────────────
+        if "diet" in advice or "exercise" in advice:
+            diet_col, ex_col = st.columns(2)
+            if "diet" in advice:
+                with diet_col:
+                    eat_items   = "".join([f"<div style='display:flex;gap:7px;margin-bottom:5px;'><span style='color:#3B6D11;'>✔</span><p style='font-size:12px;color:#27500A;margin:0;'>{i}</p></div>" for i in advice["diet"]["eat"]])
+                    avoid_items = "".join([f"<div style='display:flex;gap:7px;margin-bottom:5px;'><span style='color:#A32D2D;'>✖</span><p style='font-size:12px;color:#501313;margin:0;'>{i}</p></div>" for i in advice["diet"]["avoid"]])
+                    st.markdown(f"""<div style='background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:1.1rem;'>
+                        <p style='font-size:13px;font-weight:600;color:var(--color-text-primary);margin:0 0 10px;'>🥗 Diet Guidance</p>
+                        <p style='font-size:11px;font-weight:500;color:#3B6D11;margin:0 0 6px;text-transform:uppercase;'>Eat</p>
+                        {eat_items}
+                        <p style='font-size:11px;font-weight:500;color:#A32D2D;margin:10px 0 6px;text-transform:uppercase;'>Avoid</p>
+                        {avoid_items}
+                    </div>""", unsafe_allow_html=True)
+            if "exercise" in advice:
+                with ex_col:
+                    rec_items   = "".join([f"<div style='display:flex;gap:7px;margin-bottom:5px;'><span style='color:#3B6D11;'>✔</span><p style='font-size:12px;color:#27500A;margin:0;'>{i}</p></div>" for i in advice["exercise"]["recommended"]])
+                    avoid_items = "".join([f"<div style='display:flex;gap:7px;margin-bottom:5px;'><span style='color:#A32D2D;'>✖</span><p style='font-size:12px;color:#501313;margin:0;'>{i}</p></div>" for i in advice["exercise"]["avoid"]])
+                    st.markdown(f"""<div style='background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:1.1rem;'>
+                        <p style='font-size:13px;font-weight:600;color:var(--color-text-primary);margin:0 0 10px;'>🏃 Exercise Guidance</p>
+                        <p style='font-size:11px;font-weight:500;color:#3B6D11;margin:0 0 6px;text-transform:uppercase;'>Recommended</p>
+                        {rec_items}
+                        <p style='font-size:11px;font-weight:500;color:#A32D2D;margin:10px 0 6px;text-transform:uppercase;'>Avoid</p>
+                        {avoid_items}
+                    </div>""", unsafe_allow_html=True)
+            st.markdown("")
+
+        # ── Immediate Actions ───────────────────────────────────────────────
         if "immediate_actions" in advice:
-            st.markdown("##### 🚨 IMMEDIATE ACTIONS")
-            for i, a in enumerate(advice["immediate_actions"], 1):
-                st.markdown(f"{i}. {a}")
+            ia_items = "".join([
+                f"<div style='display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;'>"
+                f"<div style='min-width:20px;height:20px;border-radius:50%;background:#A32D2D;color:white;"
+                f"font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;'>{i}</div>"
+                f"<p style='font-size:13px;color:#501313;margin:0;'>{a}</p></div>"
+                for i, a in enumerate(advice["immediate_actions"], 1)
+            ])
+            st.markdown(f"""<div style='background:#FCEBEB;border:1px solid #F7C1C1;border-radius:10px;padding:1.1rem;margin-bottom:1rem;'>
+                <p style='font-size:13px;font-weight:600;color:#791F1F;margin:0 0 12px;'>🚨 Immediate Actions Required</p>
+                {ia_items}
+            </div>""", unsafe_allow_html=True)
+
+        # ── Trimester-specific advice ───────────────────────────────────────
+        if "trimester_advice" in advice:
+            st.markdown("##### 🗓️ Trimester-Specific Guidance")
+            tri_tabs = st.tabs(["🌱 1st Trimester", "🌿 2nd Trimester", "🍀 3rd Trimester"])
+            for t_idx, t_key in enumerate(["1", "2", "3"]):
+                t = advice["trimester_advice"][t_key]
+                active = t_key == trimester_key
+                with tri_tabs[t_idx]:
+                    badge = f"<span style='background:{bg};color:{tc};border-radius:99px;padding:2px 8px;font-size:10px;font-weight:600;margin-left:8px;'>Current</span>" if active else ""
+                    dot_color = bc if active else "#9FE1CB"
+                    tip_items = "".join([
+                        f"<div style='display:flex;align-items:flex-start;gap:8px;margin-bottom:7px;'>"
+                        f"<div style='width:6px;height:6px;border-radius:50%;background:{dot_color};margin-top:5px;flex-shrink:0;'></div>"
+                        f"<p style='font-size:13px;color:var(--color-text-primary);margin:0;'>{tip}</p></div>"
+                        for tip in t["tips"]
+                    ])
+                    focus_bg = bg if active else "var(--color-background-secondary)"
+                    focus_bc = bc if active else "var(--color-border-tertiary)"
+                    focus_tc = tc if active else "var(--color-text-secondary)"
+                    st.markdown(f"""<div style='background:{focus_bg};border:1px solid {focus_bc};border-radius:10px;padding:1.1rem;margin-top:8px;'>
+                        <p style='font-size:13px;font-weight:600;color:{focus_tc};margin:0 0 4px;'>{t["label"]}{badge}</p>
+                        <p style='font-size:11px;color:var(--color-text-tertiary);margin:0 0 10px;'>Focus: {t["focus"]}</p>
+                        {tip_items}
+                    </div>""", unsafe_allow_html=True)
 
 # ============================================================================
 # PAGE: AI ASSISTANT
