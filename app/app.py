@@ -267,19 +267,23 @@ for i in range(len(MENU_OPTIONS)):
         color = "var(--color-border-tertiary)"  # gray = upcoming
     dots_html += f"<div style='flex:1;height:5px;border-radius:3px;background:{color};'></div>"
 
+labels_html = ""
+for i in range(len(MENU_OPTIONS)):
+    lcolor  = "#185FA5" if i == current_idx else "var(--color-text-tertiary)"
+    lweight = "500"     if i == current_idx else "400"
+    labels_html += f"<span style='font-size:10px;color:{lcolor};font-weight:{lweight};'>{step_icons[i]} {step_labels[i]}</span>"
+
+step_header = f"Step {current_idx + 1} of {len(MENU_OPTIONS)} &mdash; <b>{step_labels[current_idx]}</b>"
+
 st.markdown(f"""
 <div style='background:var(--color-background-secondary);border-radius:var(--border-radius-lg);
      padding:0.9rem 1.25rem;margin-bottom:1rem;'>
   <div style='display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;'>
     <p style='font-size:12px;color:var(--color-text-secondary);margin:0;'>Assessment steps</p>
-    <p style='font-size:12px;color:var(--color-text-secondary);margin:0;'>
-      Step {current_idx + 1} of {len(MENU_OPTIONS)} — <b>{step_labels[current_idx]}</b>
-    </p>
+    <p style='font-size:12px;color:var(--color-text-secondary);margin:0;'>{step_header}</p>
   </div>
   <div style='display:flex;gap:4px;margin-bottom:10px;'>{dots_html}</div>
-  <div style='display:flex;justify-content:space-between;'>
-    {''.join([f"<span style='font-size:10px;color:{\"#185FA5\" if i==current_idx else \"var(--color-text-tertiary)\"};font-weight:{\"500\" if i==current_idx else \"400\"};'>{step_icons[i]} {step_labels[i]}</span>" for i in range(len(MENU_OPTIONS))])}
-  </div>
+  <div style='display:flex;justify-content:space-between;'>{labels_html}</div>
 </div>
 """, unsafe_allow_html=True)
 
