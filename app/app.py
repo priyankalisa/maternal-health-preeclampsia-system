@@ -50,7 +50,7 @@ def get_advice(model_name, prob):
 
 def should_proceed_to_phase2(prob):
     config = load_config()
-    return prob >= config["thresholds"]["maternal_health"]["moderate"]
+    return prob >= config["thresholds"]["maternal_health"]["low"]
 
 def load_model(name):
     return joblib.load(MODELS_PATH / f"{name}.pkl")
@@ -602,6 +602,7 @@ elif menu == "👩‍⚕️ Maternal Check":
             model = load_model("maternal_health_model")
             prob  = model.predict_proba(maternal_data)[0][1] * 100
             st.session_state.maternal_result = {"probability": prob, "gestation": gestation}
+            st.rerun()
 
     if st.session_state.maternal_result:
         advice   = get_advice("maternal_health", st.session_state.maternal_result["probability"])
@@ -825,6 +826,7 @@ elif menu == "🫀 Preeclampsia Check":
             model = load_model("preeclampsia_model")
             prob  = model.predict_proba(preeclampsia_data)[0][1] * 100
             st.session_state.preeclampsia_result = {"probability": prob, "gestation": gestational_age}
+            st.rerun()
 
     if st.session_state.preeclampsia_result:
         advice   = get_advice("preeclampsia", st.session_state.preeclampsia_result["probability"])
