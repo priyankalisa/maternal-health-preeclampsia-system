@@ -145,20 +145,75 @@ if "chat_history" not in st.session_state:
 # SIDEBAR MENU — driven by session state index so buttons can change it
 # ============================================================================
 
-menu = st.sidebar.selectbox(
-    "🏥 Hospital System",
+st.sidebar.markdown("### 🏥 Hospital System")
+st.sidebar.markdown("---")
+
+menu = st.sidebar.radio(
+    "Navigation",
     MENU_OPTIONS,
     index=st.session_state.menu_index,
-    key="sidebar_menu"
+    key="sidebar_menu",
+    label_visibility="collapsed"
 )
 st.session_state.menu_index = MENU_OPTIONS.index(menu)
 
+# ── Sidebar progress indicator ─────────────────────────────────────────────
+maternal_done  = st.session_state.maternal_result is not None
+preclamp_done  = st.session_state.preeclampsia_result is not None
+steps_done     = int(maternal_done) + int(preclamp_done)
+steps_total    = 2
+progress_pct   = int((steps_done / steps_total) * 100)
+
+st.sidebar.markdown("---")
+st.sidebar.markdown(f"**Assessment progress** — {steps_done} of {steps_total} done")
+st.sidebar.progress(progress_pct)
+if maternal_done:
+    st.sidebar.markdown("✅ Maternal health done")
+else:
+    st.sidebar.markdown("⬜ Maternal health pending")
+if preclamp_done:
+    st.sidebar.markdown("✅ Preeclampsia done")
+else:
+    st.sidebar.markdown("⬜ Preeclampsia pending")
+
 # ============================================================================
-# MAIN TITLE
+# MAIN HEADER BANNER
 # ============================================================================
 
-st.title("🏥 Maternal & Preeclampsia Assessment System")
-st.markdown("---")
+maternal_done_hdr  = st.session_state.maternal_result is not None
+preclamp_done_hdr  = st.session_state.preeclampsia_result is not None
+steps_done_hdr     = int(maternal_done_hdr) + int(preclamp_done_hdr)
+
+import datetime
+today_str = datetime.date.today().strftime("%B %Y")
+
+st.markdown(f"""
+<div style='background:var(--color-background-secondary);border-radius:var(--border-radius-lg);
+     padding:1.25rem 1.75rem;display:flex;align-items:center;justify-content:space-between;
+     margin-bottom:1rem;'>
+  <div>
+    <p style='font-size:11px;color:var(--color-text-tertiary);margin:0 0 4px;
+       text-transform:uppercase;letter-spacing:0.07em;'>Maternal health system</p>
+    <p style='font-size:20px;font-weight:500;margin:0;color:var(--color-text-primary);'>
+      🏥 Maternal &amp; Preeclampsia Assessment
+    </p>
+  </div>
+  <div style='display:flex;gap:8px;align-items:center;flex-wrap:wrap;'>
+    <div style='background:#EAF3DE;border-radius:var(--border-radius-md);padding:5px 12px;
+        font-size:12px;color:#3B6D11;font-weight:500;'>
+      🤖 AI active
+    </div>
+    <div style='background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);
+        border-radius:var(--border-radius-md);padding:5px 12px;font-size:12px;color:var(--color-text-secondary);'>
+      📅 {today_str}
+    </div>
+    <div style='background:#E6F1FB;border-radius:var(--border-radius-md);padding:5px 12px;
+        font-size:12px;color:#185FA5;font-weight:500;'>
+      ✅ {steps_done_hdr}/2 steps done
+    </div>
+  </div>
+</div>
+""", unsafe_allow_html=True)
 
 # ============================================================================
 # QUICK NAV BUTTONS
@@ -194,8 +249,39 @@ with col_quick4:
 st.markdown("---")
 
 # ============================================================================
-# BACK / NEXT NAV BAR
+# STEP PROGRESS BAR
 # ============================================================================
+
+step_icons = ["📊", "👩‍⚕️", "🫀", "💬", "📈"]
+step_labels = ["Dashboard", "Maternal Check", "Preeclampsia", "AI Assistant", "Analytics"]
+current_idx = st.session_state.menu_index
+
+# Build colored dots HTML
+dots_html = ""
+for i in range(len(MENU_OPTIONS)):
+    if i < current_idx:
+        color = "#3B6D11"   # green = done
+    elif i == current_idx:
+        color = "#185FA5"   # blue = current
+    else:
+        color = "var(--color-border-tertiary)"  # gray = upcoming
+    dots_html += f"<div style='flex:1;height:5px;border-radius:3px;background:{color};'></div>"
+
+st.markdown(f"""
+<div style='background:var(--color-background-secondary);border-radius:var(--border-radius-lg);
+     padding:0.9rem 1.25rem;margin-bottom:1rem;'>
+  <div style='display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;'>
+    <p style='font-size:12px;color:var(--color-text-secondary);margin:0;'>Assessment steps</p>
+    <p style='font-size:12px;color:var(--color-text-secondary);margin:0;'>
+      Step {current_idx + 1} of {len(MENU_OPTIONS)} — <b>{step_labels[current_idx]}</b>
+    </p>
+  </div>
+  <div style='display:flex;gap:4px;margin-bottom:10px;'>{dots_html}</div>
+  <div style='display:flex;justify-content:space-between;'>
+    {''.join([f"<span style='font-size:10px;color:{\"#185FA5\" if i==current_idx else \"var(--color-text-tertiary)\"};font-weight:{\"500\" if i==current_idx else \"400\"};'>{step_icons[i]} {step_labels[i]}</span>" for i in range(len(MENU_OPTIONS))])}
+  </div>
+</div>
+""", unsafe_allow_html=True)
 
 col_nav1, col_nav2, col_nav3 = st.columns([1, 2, 1])
 
@@ -206,7 +292,7 @@ with col_nav1:
         st.rerun()
 
 with col_nav2:
-    st.markdown(f"### 📍 {MENU_OPTIONS[st.session_state.menu_index]}")
+    st.markdown("")
 
 with col_nav3:
     next_disabled = st.session_state.menu_index >= len(MENU_OPTIONS) - 1
@@ -222,8 +308,6 @@ with col_nav3:
             st.session_state.menu_index = next_index
             st.rerun()
 
-st.markdown("---")
-
 # ============================================================================
 # PAGE: DASHBOARD
 # ============================================================================
@@ -238,24 +322,72 @@ if menu == "📊 Dashboard":
     preeclampsia_done = preeclampsia_prob is not None
     high_risk = maternal_done and should_proceed_to_phase2(maternal_prob)
 
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Assessments Done", int(maternal_done) + int(preeclampsia_done))
-    col2.metric("High Risk", "Yes ⚠️" if high_risk else "No ✅")
-    col3.metric("AI Status", "Active ✅")
+    # ── Stat Cards ─────────────────────────────────────────────────────────
+    def _risk_colors(p):
+        if p < 40:   return "#EAF3DE", "#3B6D11", "#27500A", "#C0DD97"
+        elif p < 70: return "#FAEEDA", "#854F0B", "#412402", "#FAC775"
+        else:        return "#FCEBEB", "#A32D2D", "#501313", "#F7C1C1"
+
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.markdown("""<div style='background:#E6F1FB;border-radius:10px;padding:1rem;'>
+            <p style='font-size:12px;color:#185FA5;margin:0 0 6px;'>📋 Assessments done</p>
+            <p style='font-size:28px;font-weight:600;margin:0;color:#042C53;'>{}</p>
+        </div>""".format(int(maternal_done) + int(preeclampsia_done)), unsafe_allow_html=True)
+    with col2:
+        hr_bg = "#FCEBEB" if high_risk else "#EAF3DE"
+        hr_tc = "#501313" if high_risk else "#173404"
+        hr_sc = "#A32D2D" if high_risk else "#3B6D11"
+        hr_val = "Yes ⚠️" if high_risk else "No ✅"
+        st.markdown(f"""<div style='background:{hr_bg};border-radius:10px;padding:1rem;'>
+            <p style='font-size:12px;color:{hr_sc};margin:0 0 6px;'>🚨 High risk</p>
+            <p style='font-size:28px;font-weight:600;margin:0;color:{hr_tc};'>{hr_val}</p>
+        </div>""", unsafe_allow_html=True)
+    with col3:
+        st.markdown("""<div style='background:#EAF3DE;border-radius:10px;padding:1rem;'>
+            <p style='font-size:12px;color:#3B6D11;margin:0 0 6px;'>🤖 AI status</p>
+            <p style='font-size:28px;font-weight:600;margin:0;color:#173404;'>Active</p>
+        </div>""", unsafe_allow_html=True)
+    with col4:
+        done_count = int(maternal_done) + int(preeclampsia_done)
+        remaining = 2 - done_count
+        st.markdown(f"""<div style='background:#F1EFE8;border-radius:10px;padding:1rem;'>
+            <p style='font-size:12px;color:#5F5E5A;margin:0 0 6px;'>📊 Steps remaining</p>
+            <p style='font-size:28px;font-weight:600;margin:0;color:#2C2C2A;'>{remaining}</p>
+        </div>""", unsafe_allow_html=True)
 
     st.markdown("---")
 
-    if maternal_done:
-        color = "green" if maternal_prob < 40 else "orange" if maternal_prob < 70 else "red"
-        st.markdown(f"**🤰 Maternal Health Risk:** <span style='color:{color}'>{maternal_prob:.1f}%</span>", unsafe_allow_html=True)
-    else:
-        st.info("🤰 Maternal Health assessment not done yet.")
-
-    if preeclampsia_done:
-        color = "green" if preeclampsia_prob < 40 else "orange" if preeclampsia_prob < 70 else "red"
-        st.markdown(f"**🫀 Preeclampsia Risk:** <span style='color:{color}'>{preeclampsia_prob:.1f}%</span>", unsafe_allow_html=True)
-    else:
-        st.info("🫀 Preeclampsia assessment not done yet.")
+    # ── Risk Summary Cards ──────────────────────────────────────────────────
+    col_m, col_p = st.columns(2)
+    with col_m:
+        if maternal_done:
+            bg, bc, tc, bar_bg = _risk_colors(maternal_prob)
+            risk_label = "Low" if maternal_prob < 40 else "Moderate" if maternal_prob < 70 else "High"
+            st.markdown(f"""<div style='background:{bg};border:1px solid {bc};border-radius:10px;padding:1.25rem;'>
+                <p style='font-size:13px;color:{bc};margin:0 0 4px;'>🤰 Maternal Health Risk</p>
+                <p style='font-size:32px;font-weight:600;margin:0 0 8px;color:{tc};'>{maternal_prob:.1f}%</p>
+                <div style='height:6px;border-radius:3px;background:{bar_bg};margin-bottom:8px;'>
+                    <div style='height:6px;border-radius:3px;background:{bc};width:{maternal_prob:.0f}%;'></div>
+                </div>
+                <span style='font-size:12px;background:{bar_bg};color:{tc};padding:2px 10px;border-radius:6px;'>{risk_label} risk</span>
+            </div>""", unsafe_allow_html=True)
+        else:
+            st.info("🤰 Maternal Health assessment not done yet.")
+    with col_p:
+        if preeclampsia_done:
+            bg, bc, tc, bar_bg = _risk_colors(preeclampsia_prob)
+            risk_label = "Low" if preeclampsia_prob < 40 else "Moderate" if preeclampsia_prob < 70 else "High"
+            st.markdown(f"""<div style='background:{bg};border:1px solid {bc};border-radius:10px;padding:1.25rem;'>
+                <p style='font-size:13px;color:{bc};margin:0 0 4px;'>🫀 Preeclampsia Risk</p>
+                <p style='font-size:32px;font-weight:600;margin:0 0 8px;color:{tc};'>{preeclampsia_prob:.1f}%</p>
+                <div style='height:6px;border-radius:3px;background:{bar_bg};margin-bottom:8px;'>
+                    <div style='height:6px;border-radius:3px;background:{bc};width:{preeclampsia_prob:.0f}%;'></div>
+                </div>
+                <span style='font-size:12px;background:{bar_bg};color:{tc};padding:2px 10px;border-radius:6px;'>{risk_label} risk</span>
+            </div>""", unsafe_allow_html=True)
+        else:
+            st.info("🫀 Preeclampsia assessment not done yet.")
 
 # ============================================================================
 # PAGE: MATERNAL CHECK
@@ -334,20 +466,38 @@ elif menu == "👩‍⚕️ Maternal Check":
 
     if st.session_state.maternal_result:
         advice = get_advice("maternal_health", st.session_state.maternal_result["probability"])
-        color = "green" if advice["range"] == "low" else "orange" if advice["range"] == "moderate" else "red"
+        prob = advice["probability"]
 
-        st.markdown(f"## {advice.get('title', 'Result')}")
-        st.markdown(f"### Probability: <span style='color:{color}'>{advice['probability']:.1f}%</span>", unsafe_allow_html=True)
+        if advice["range"] == "low":
+            bg, bc, tc, bar_bg, icon = "#EAF3DE", "#3B6D11", "#173404", "#C0DD97", "✅"
+        elif advice["range"] == "moderate":
+            bg, bc, tc, bar_bg, icon = "#FAEEDA", "#854F0B", "#412402", "#FAC775", "⚠️"
+        else:
+            bg, bc, tc, bar_bg, icon = "#FCEBEB", "#A32D2D", "#501313", "#F7C1C1", "🚨"
 
-        if "message" in advice:
-            st.markdown(f"**{advice['message']}**")
+        st.markdown(f"""<div style='background:{bg};border:1px solid {bc};border-radius:12px;padding:1.5rem;margin:1rem 0;'>
+            <div style='display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;'>
+                <div>
+                    <p style='font-size:11px;color:{bc};margin:0 0 2px;text-transform:uppercase;letter-spacing:0.05em;'>Maternal Health Assessment</p>
+                    <p style='font-size:17px;font-weight:600;margin:0;color:{tc};'>{icon} {advice.get("title", "Result")}</p>
+                </div>
+                <div style='text-align:right;'>
+                    <p style='font-size:36px;font-weight:700;margin:0;color:{tc};'>{prob:.1f}%</p>
+                    <p style='font-size:11px;color:{bc};margin:0;'>risk probability</p>
+                </div>
+            </div>
+            <div style='height:6px;border-radius:3px;background:{bar_bg};margin-bottom:12px;'>
+                <div style='height:6px;border-radius:3px;background:{bc};width:{prob:.0f}%;'></div>
+            </div>
+            <p style='font-size:13px;color:{tc};margin:0;'>{advice.get("message", "")}</p>
+        </div>""", unsafe_allow_html=True)
 
         if "recommendations" in advice:
-            st.markdown("### 📋 Recommendations")
+            st.markdown("##### 📋 Recommendations")
             for r in advice["recommendations"]:
                 st.markdown(f"- {r}")
 
-        if should_proceed_to_phase2(advice["probability"]):
+        if should_proceed_to_phase2(prob):
             st.warning("⚠️ High risk factors detected!")
             if st.button("➡️ Continue to Preeclampsia Assessment"):
                 st.session_state.menu_index = MENU_OPTIONS.index("🫀 Preeclampsia Check")
@@ -434,30 +584,48 @@ elif menu == "🫀 Preeclampsia Check":
 
     if st.session_state.preeclampsia_result:
         advice = get_advice("preeclampsia", st.session_state.preeclampsia_result["probability"])
-        color = "green" if advice["range"] == "low" else "orange" if advice["range"] == "moderate" else "red"
+        prob = advice["probability"]
 
-        st.markdown(f"## {advice.get('title', 'Result')}")
-        st.markdown(f"### Probability: <span style='color:{color}'>{advice['probability']:.1f}%</span>", unsafe_allow_html=True)
+        if advice["range"] == "low":
+            bg, bc, tc, bar_bg, icon = "#EAF3DE", "#3B6D11", "#173404", "#C0DD97", "✅"
+        elif advice["range"] == "moderate":
+            bg, bc, tc, bar_bg, icon = "#FAEEDA", "#854F0B", "#412402", "#FAC775", "⚠️"
+        else:
+            bg, bc, tc, bar_bg, icon = "#FCEBEB", "#A32D2D", "#501313", "#F7C1C1", "🚨"
 
-        if "message" in advice:
-            st.markdown(f"**{advice['message']}**")
+        st.markdown(f"""<div style='background:{bg};border:1px solid {bc};border-radius:12px;padding:1.5rem;margin:1rem 0;'>
+            <div style='display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;'>
+                <div>
+                    <p style='font-size:11px;color:{bc};margin:0 0 2px;text-transform:uppercase;letter-spacing:0.05em;'>Preeclampsia Assessment</p>
+                    <p style='font-size:17px;font-weight:600;margin:0;color:{tc};'>{icon} {advice.get("title", "Result")}</p>
+                </div>
+                <div style='text-align:right;'>
+                    <p style='font-size:36px;font-weight:700;margin:0;color:{tc};'>{prob:.1f}%</p>
+                    <p style='font-size:11px;color:{bc};margin:0;'>risk probability</p>
+                </div>
+            </div>
+            <div style='height:6px;border-radius:3px;background:{bar_bg};margin-bottom:12px;'>
+                <div style='height:6px;border-radius:3px;background:{bc};width:{prob:.0f}%;'></div>
+            </div>
+            <p style='font-size:13px;color:{tc};margin:0;'>{advice.get("message", "")}</p>
+        </div>""", unsafe_allow_html=True)
 
         if "explanation" in advice:
-            st.markdown("### 📖 Explanation")
+            st.markdown("##### 📖 Explanation")
             st.markdown(advice["explanation"])
 
         if "do" in advice:
-            st.markdown("### ✅ DO")
+            st.markdown("##### ✅ DO")
             for d in advice["do"]:
                 st.markdown(f"- {d}")
 
         if "dont" in advice:
-            st.markdown("### ❌ DON'T")
+            st.markdown("##### ❌ DON'T")
             for d in advice["dont"]:
                 st.markdown(f"- {d}")
 
         if "immediate_actions" in advice:
-            st.markdown("### 🚨 IMMEDIATE ACTIONS")
+            st.markdown("##### 🚨 IMMEDIATE ACTIONS")
             for i, a in enumerate(advice["immediate_actions"], 1):
                 st.markdown(f"{i}. {a}")
 
@@ -521,8 +689,28 @@ elif menu == "📈 Analytics":
 
         df = pd.DataFrame(rows)
 
+        # ── Styled Summary Cards ───────────────────────────────────────────
         st.markdown("### 📋 Assessment Summary")
-        st.dataframe(df, use_container_width=True)
+        def _ac(p):
+            if p < 40:   return "#EAF3DE", "#3B6D11", "#173404", "#C0DD97", "Low"
+            elif p < 70: return "#FAEEDA", "#854F0B", "#412402", "#FAC775", "Moderate"
+            else:        return "#FCEBEB", "#A32D2D", "#501313", "#F7C1C1", "High"
+
+        scols = st.columns(len(rows))
+        for i, row in enumerate(rows):
+            p = row["Probability (%)"]
+            bg, bc, tc, bar_bg, rl = _ac(p)
+            with scols[i]:
+                st.markdown(f"""<div style='background:{bg};border:1px solid {bc};border-radius:10px;padding:1.1rem;'>
+                    <p style='font-size:12px;color:{bc};margin:0 0 4px;'>{row["Assessment"]}</p>
+                    <p style='font-size:30px;font-weight:700;margin:0 0 8px;color:{tc};'>{p}%</p>
+                    <div style='height:5px;border-radius:3px;background:{bar_bg};margin-bottom:8px;'>
+                        <div style='height:5px;border-radius:3px;background:{bc};width:{p}%;'></div>
+                    </div>
+                    <span style='font-size:11px;background:{bar_bg};color:{tc};padding:2px 9px;border-radius:6px;'>{rl} risk</span>
+                </div>""", unsafe_allow_html=True)
+
+        st.markdown("")
 
         # ── Circular Gauges ────────────────────────────────────────────────
         st.markdown("### 🎯 Risk Probability Gauges")
@@ -558,4 +746,13 @@ elif menu == "📈 Analytics":
         st.markdown("### 🎯 Risk Level Breakdown")
         risk_counts = df["Risk Level"].value_counts().reset_index()
         risk_counts.columns = ["Risk Level", "Count"]
-        st.dataframe(risk_counts, use_container_width=True)
+        rl_styles = {"High": ("#FCEBEB","#A32D2D","#501313"), "Moderate": ("#FAEEDA","#854F0B","#412402"), "Low": ("#EAF3DE","#3B6D11","#173404")}
+        rl_cols = st.columns(len(risk_counts))
+        for i, row in risk_counts.iterrows():
+            rl = row["Risk Level"]
+            bg, bc, tc = rl_styles.get(rl, ("#F1EFE8","#5F5E5A","#2C2C2A"))
+            with rl_cols[i]:
+                st.markdown(f"""<div style='background:{bg};border:1px solid {bc};border-radius:10px;padding:1rem;text-align:center;'>
+                    <p style='font-size:12px;color:{bc};margin:0 0 4px;'>{rl} risk</p>
+                    <p style='font-size:32px;font-weight:700;margin:0;color:{tc};'>{row["Count"]}</p>
+                </div>""", unsafe_allow_html=True)
