@@ -50,7 +50,7 @@ def get_advice(model_name, prob):
 
 def should_proceed_to_phase2(prob):
     config = load_config()
-    return prob >= config["thresholds"]["maternal_health"]["high"]
+    return prob >= config["thresholds"]["maternal_health"]["moderate"]
 
 def load_model(name):
     return joblib.load(MODELS_PATH / f"{name}.pkl")
@@ -233,6 +233,29 @@ if "chat_history" not in st.session_state:
 st.sidebar.markdown("### 🏥 Hospital System")
 st.sidebar.markdown("---")
 
+# Compute phase2 eligibility before building the sidebar
+# (defined here early so we can inject CSS before rendering the radio)
+_maternal_for_sidebar = st.session_state.maternal_result
+_phase2_eligible_sidebar = (
+    _maternal_for_sidebar is not None and
+    should_proceed_to_phase2(_maternal_for_sidebar["probability"])
+)
+
+# Visually disable the Preeclampsia Check radio option when not eligible
+if not _phase2_eligible_sidebar:
+    st.sidebar.markdown("""
+<style>
+section[data-testid="stSidebar"] div[data-testid="stRadio"] label:nth-child(3) {
+    opacity: 0.4 !important;
+    pointer-events: none !important;
+    cursor: not-allowed !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# Build filtered options: always show all, but we will block navigation to
+# Preeclampsia Check via the Next button guard. For the radio we keep all
+# options visible; eligibility is enforced at the button/nav level.
 menu = st.sidebar.radio(
     "Navigation",
     MENU_OPTIONS,
@@ -240,6 +263,12 @@ menu = st.sidebar.radio(
     key="sidebar_menu",
     label_visibility="collapsed"
 )
+
+# If user tries to navigate to Preeclampsia Check when not eligible, redirect
+if menu == "🫀 Preeclampsia Check" and not _phase2_eligible_sidebar:
+    st.session_state.menu_index = MENU_OPTIONS.index("👩‍⚕️ Maternal Check")
+    st.rerun()
+
 st.session_state.menu_index = MENU_OPTIONS.index(menu)
 
 maternal_done  = st.session_state.maternal_result is not None
@@ -308,11 +337,7 @@ phase2_eligible = (
     should_proceed_to_phase2(st.session_state.maternal_result["probability"])
 )
 
-if phase2_eligible:
-    col_quick1, col_quick2, col_quick3, col_quick4 = st.columns(4)
-else:
-    col_quick1, col_quick2, col_quick4 = st.columns(3)
-    col_quick3 = None
+col_quick1, col_quick2, col_quick3, col_quick4 = st.columns(4)
 
 with col_quick1:
     st.link_button("🏠 Home", url="https://priyankalisa.github.io/maternal-health-preeclampsia-system/", use_container_width=True)
@@ -323,11 +348,10 @@ with col_quick2:
         st.session_state.preeclampsia_result = None
         st.rerun()
 
-if col_quick3 is not None:
-    with col_quick3:
-        if st.button("🫀 Step 2: Preeclampsia", use_container_width=True):
-            st.session_state.menu_index = MENU_OPTIONS.index("🫀 Preeclampsia Check")
-            st.rerun()
+with col_quick3:
+    if st.button("🫀 Step 2: Preeclampsia", use_container_width=True, disabled=not phase2_eligible):
+        st.session_state.menu_index = MENU_OPTIONS.index("🫀 Preeclampsia Check")
+        st.rerun()
 
 with col_quick4:
     if st.button("🔄 Reset All", use_container_width=True):
@@ -396,7 +420,7 @@ with col_nav3:
                 st.session_state.menu_index = next_index
                 st.rerun()
             else:
-                st.warning("⚠️ Preeclampsia check is only available after a High Risk maternal result.")
+                st.warning("⚠️ Preeclampsia check is only available after a Moderate or High Risk maternal result.")
         else:
             st.session_state.menu_index = next_index
             st.rerun()

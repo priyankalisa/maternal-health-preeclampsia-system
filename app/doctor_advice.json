@@ -1,14 +1,14 @@
 {
     "thresholds": {
         "maternal_health": {
-            "low": 50,
-            "moderate": 75,
-            "high": 75
+            "low": 40,
+            "moderate": 70,
+            "high": 70
         },
         "preeclampsia": {
             "low": 40,
             "moderate": 70,
-            "high": 85
+            "high": 70
         }
     },
     "maternal_health": {
