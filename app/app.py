@@ -205,6 +205,18 @@ st.markdown("""
 /* Page background */
 .stApp { background-color: #F4FCF8; }
 
+/* Mobile: stack columns on screens narrower than 640px */
+@media (max-width: 640px) {
+    div[data-testid="stHorizontalBlock"] {
+        flex-wrap: wrap !important;
+    }
+    div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+        width: 100% !important;
+        flex: 1 1 100% !important;
+        min-width: 100% !important;
+    }
+}
+
 /* Sidebar background + right border */
 section[data-testid="stSidebar"] {
     background-color: #E1F5EE;
@@ -289,6 +301,12 @@ if "preeclampsia_timestamp" not in st.session_state:
 
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
+
+if "prefill_age" not in st.session_state:
+    st.session_state.prefill_age = 25
+
+if "prefill_gestation" not in st.session_state:
+    st.session_state.prefill_gestation = 20
 
 # ============================================================================
 # SIDEBAR MENU
@@ -621,49 +639,52 @@ elif menu == "👩‍⚕️ Maternal Check":
 
     # IMPROVEMENT #3 — Pill-style section headers
     st.markdown(section_header("👤", "Basic Information"), unsafe_allow_html=True)
-    c1, c2, c3 = st.columns(3)
+    c1, c2 = st.columns(2)
     with c1:
         age = st.number_input("Age (years)", 15, 60, 25)
     with c2:
         gravida = st.number_input("Gravida (pregnancies)", 0, 20, 1)
-    with c3:
+    c3a, c3b = st.columns(2)
+    with c3a:
         titi_tika = st.number_input("TiTi Tika", 0, 10, 0)
-
-    c4, c5, c6 = st.columns(3)
-    with c4:
+    with c3b:
         gestation = st.number_input("Gestation (weeks)", 1, 42, 20)
-    with c5:
+
+    c4, c5 = st.columns(2)
+    with c4:
         weight = st.number_input("Weight (kg)", 30.0, 200.0, 60.0)
-    with c6:
+    with c5:
         height = st.number_input("Height (cm)", 100.0, 220.0, 160.0)
 
     st.markdown("---")
 
     st.markdown(section_header("🩺", "Clinical Indicators"), unsafe_allow_html=True)
-    c7, c8, c9 = st.columns(3)
+    c7, c8 = st.columns(2)
     with c7:
         anemia = st.selectbox("Anemia", ["None", "Minimal", "Medium"])
     with c8:
         jaundice = st.selectbox("Jaundice", ["None", "Minimal", "Medium"])
-    with c9:
+    c9a, c9b = st.columns(2)
+    with c9a:
         albumin = st.selectbox("Albumin", ["None", "Minimal", "Medium", "Higher"])
-
-    c10, c11, c12 = st.columns(3)
-    with c10:
+    with c9b:
         fetal_pos = st.selectbox("Fetal Position", ["Normal", "Abnormal"])
-    with c11:
+
+    c10, c11 = st.columns(2)
+    with c10:
         fetal_hb = st.number_input("Fetal Heart Beat (bpm)", 80, 200, 140)
-    with c12:
+    with c11:
         blood_sugar = st.selectbox("Blood Sugar", ["Yes", "No"])
 
     st.markdown("---")
 
     st.markdown(section_header("🧪", "Lab Tests & Blood Pressure"), unsafe_allow_html=True)
-    c13, c14, c15, c16 = st.columns(4)
+    c13, c14 = st.columns(2)
     with c13:
         vdrl = st.selectbox("VDRL", ["Negative", "Positive"])
     with c14:
         hrsag = st.selectbox("HRsAG", ["Negative", "Positive"])
+    c15, c16 = st.columns(2)
     with c15:
         sys_bp = st.number_input("Systolic BP (mmHg)", 60, 200, 120)
     with c16:
@@ -704,6 +725,9 @@ elif menu == "👩‍⚕️ Maternal Check":
             prob  = model.predict_proba(maternal_data)[0][1] * 100
             st.session_state.maternal_result = {"probability": prob, "gestation": gestation}
             st.session_state.maternal_timestamp = datetime.datetime.now().strftime("%-d %B %Y at %-I:%M %p")
+            # Store shared fields so Step 2 can pre-fill them without re-entry
+            st.session_state.prefill_age = age
+            st.session_state.prefill_gestation = gestation
             st.rerun()
 
     if st.session_state.maternal_result:
@@ -872,23 +896,32 @@ elif menu == "🫀 Preeclampsia Check":
 
     # IMPROVEMENT #3 — Pill-style section headers
     st.markdown(section_header("👤", "Patient Profile"), unsafe_allow_html=True)
-    c1, c2, c3 = st.columns(3)
+
+    # Pre-fill age and gestational age from Step 1 if available
+    _prefill_age = st.session_state.prefill_age
+    _prefill_gest = st.session_state.prefill_gestation
+
+    c1, c2 = st.columns(2)
     with c1:
-        age = st.number_input("Age (years)", 15, 60, 25)
+        age = st.number_input("Age (years)", 15, 60, _prefill_age,
+                              help="Pre-filled from Step 1 — edit if needed")
     with c2:
         gravidity = st.number_input("Gravidity (pregnancies)", 0, 20, 1)
-    with c3:
-        gestational_age = st.number_input("Gestational Age (weeks)", 1, 42, 20)
+    c1b, c2b = st.columns(2)
+    with c1b:
+        gestational_age = st.number_input("Gestational Age (weeks)", 1, 42, _prefill_gest,
+                                          help="Pre-filled from Step 1 — edit if needed")
 
     st.markdown("---")
 
     st.markdown(section_header("💉", "Vitals & Measurements"), unsafe_allow_html=True)
-    c4, c5, c6 = st.columns(3)
+    c4, c5 = st.columns(2)
     with c4:
         pre_preg_bmi = st.number_input("Pre-Pregnancy BMI", 10.0, 60.0, 22.0)
     with c5:
         sys_bp = st.number_input("Systolic BP (mmHg)", 60, 200, 120)
-    with c6:
+    c6a, c6b = st.columns(2)
+    with c6a:
         dia_bp = st.number_input("Diastolic BP (mmHg)", 40, 120, 80)
 
     st.markdown("---")
@@ -903,12 +936,13 @@ elif menu == "🫀 Preeclampsia Check":
     st.markdown("---")
 
     st.markdown(section_header("🚩", "Clinical Flags"), unsafe_allow_html=True)
-    c9, c10, c11 = st.columns(3)
+    c9, c10 = st.columns(2)
     with c9:
         proteinuria = st.selectbox("Proteinuria", [0, 1], format_func=lambda x: "Yes" if x == 1 else "No")
     with c10:
         hiv_status = st.selectbox("HIV Status", [0, 1], format_func=lambda x: "Positive" if x == 1 else "Negative")
-    with c11:
+    c11a, c11b = st.columns(2)
+    with c11a:
         anemia_status = st.selectbox("Anemia Status", ["none", "moderate", "severe"], format_func=lambda x: x.capitalize())
 
     st.markdown("")
