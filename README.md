@@ -44,17 +44,21 @@ The platform combines **Machine Learning**, **Generative AI**, and **Interactive
 
 ## 🏥 What Does the System Do?
 
-🔹 Assess Maternal Health Risk
+🔹 Assess Overall Maternal Health Risk
 
-🔹 Predict Preeclampsia Risk
+🔹 Identify High-Risk Pregnancies Using Machine Learning
 
-🔹 Provide AI-Powered Healthcare Assistance
+🔹 Perform Secondary Preeclampsia Risk Assessment
 
-🔹 Generate Personalized Recommendations
+🔹 Generate Downloadable Patient Health Reports (PDF)
+
+🔹 Provide AI-Powered Healthcare Assistance via Gemini
+
+🔹 Generate Personalized Healthcare Recommendations
+
+🔹 Detect Emergency Warning Symptoms
 
 🔹 Visualize Risk Through Interactive Dashboards
-
-🔹 Detect Emergency Symptoms
 
 ---
 
@@ -116,16 +120,18 @@ This project applies Machine Learning techniques to support early risk identific
 
 | Feature | Description |
 |----------|-------------|
-| 🩺 Maternal Health Prediction | Predicts maternal health risk using clinical parameters |
-| 🏥 Preeclampsia Prediction | Secondary assessment for high-risk patients |
-| 💬 AI Healthcare Chatbot | Gemini-powered healthcare assistant |
-| 🚨 Emergency Detection | Detects critical warning symptoms |
-| 📊 Analytics Dashboard | Interactive charts and healthcare insights |
-| 📈 Risk Visualization | Plotly gauge-based risk indicators |
-| 💡 Personalized Recommendations | Risk-specific healthcare guidance |
-| 🌐 GitHub Pages Landing Site | Professional project landing page |
+| 🩺 Maternal Health Risk Assessment | Predicts maternal health risk using clinical and pregnancy-related parameters |
+| ⚠️ Preeclampsia Risk Prediction | Performs secondary preeclampsia screening for high-risk pregnancies |
+| 📄 PDF Report Generation | Generates downloadable patient health assessment reports |
+| 💬 AI Healthcare Chatbot | Gemini-powered healthcare assistant for maternal health guidance |
+| 🚨 Emergency Symptom Detection | Identifies critical warning symptoms requiring immediate medical attention |
+| 💡 Personalized Recommendations | Provides risk-specific healthcare recommendations and preventive guidance |
+| 📊 Interactive Analytics Dashboard | Visualizes healthcare insights through charts and analytics |
+| 📈 Risk Visualization | Displays prediction outcomes using interactive gauge indicators |
+| 🔄 Dual-Stage Assessment Workflow | Maternal Health Assessment → High-Risk Screening → Preeclampsia Assessment |
+| 🌐 GitHub Pages Landing Site | Professional project landing page with system overview |
 | ☁️ Cloud Deployment | Streamlit application deployed on Render |
-| 📱 Responsive Design | Supports desktop, tablet, and mobile devices |
+| 📱 Responsive Design | Optimized for desktop, tablet, and mobile devices |
 
 ---
 
@@ -185,67 +191,94 @@ class I,J,K deploy;
 
 | Feature | Description |
 |----------|-------------|
-| Age | Patient age |
-| Blood Pressure | Systolic & Diastolic BP |
-| BMI | Body Mass Index |
-| Blood Sugar | Blood glucose level |
-| Body Temperature | Temperature |
-| Heart Rate | Heart rate |
-| Previous Complications | Pregnancy history |
-| Diabetes History | Diabetes indicators |
-| Mental Health | Mental health condition |
+| Age | Maternal age in years |
+| Gravidity | Total number of pregnancies |
+| Gestational Age | Pregnancy duration in weeks |
+| Pre-Pregnancy BMI | Body Mass Index before pregnancy |
+| Systolic BP | Systolic blood pressure (mmHg) |
+| Diastolic BP | Diastolic blood pressure (mmHg) |
+| Hemoglobin | Hemoglobin level (g/dL) |
+| Anemia Status | Presence or absence of anemia |
+| Fasting Glucose | Fasting blood glucose level (mg/dL) |
+| Proteinuria | Presence of protein in urine |
+| HIV Status | HIV infection status |
 
 ---
 
 ## 📊 Datasets Used
 
-👉 Dataset 1: [Zenodo Maternal Health Dataset](https://zenodo.org/records/14537882)  
-👉 Dataset 2: [Kaggle High Risk Pregnancy Dataset](https://www.kaggle.com/code/aabdollahii/maternal-health-and-high-risk-pregnancy/input)  
+👉 Dataset 1: Zenodo Maternal Health Dataset  
+https://zenodo.org/records/14537882
+
+👉 Dataset 2: Africa Synthetic Maternal Health Dataset  
+https://huggingface.co/datasets/electricsheepafrica/africa-synth-maternal-health-maternal-health-pregnancy-all
 
 ### 📌 Description
-- The **Zenodo dataset** provides structured clinical data related to maternal health conditions.
-- The **Kaggle dataset** contains pregnancy-related risk factors used for predictive modeling of high-risk cases and preeclampsia detection.  
---- 
+
+- The **Zenodo Maternal Health Dataset** contains clinical and demographic information used for maternal health risk assessment and classification.
+
+- The **Africa Synthetic Maternal Health Dataset** provides pregnancy-related healthcare indicators, laboratory measurements, maternal history, and risk factors that support preeclampsia risk prediction and high-risk pregnancy analysis.
+
+### 📋 Dataset Usage in This Project
+
+| Dataset | Purpose |
+|----------|----------|
+| Zenodo Maternal Health Dataset | Maternal Health Risk Prediction Model |
+| Africa Synthetic Maternal Health Dataset | Preeclampsia Risk Prediction Model |
+---
 
 # 🏗️ System Architecture
 
 ```mermaid
 flowchart TD
 
-A[🌐 GitHub Pages Landing Page] --> B[🚀 Get Started]
+A[🌐 GitHub Pages Landing Page] --> B[🚀 Launch Application]
+
 B --> C[☁️ Render Hosted Streamlit App]
 
-C --> D[📊 Dashboard]
+C --> D[📊 Main Dashboard]
 
 D --> E[🩺 Maternal Health Assessment]
 
-E --> F{⚠️ Maternal Risk?}
+E --> F[🤖 Maternal Health ML Model]
 
-F -->|🟢 Low Risk| G[✅ Display Maternal Health Result]
-F -->|🔴 High Risk| H[🚨 Preeclampsia Assessment]
+F --> G{⚠️ Risk Level?}
 
-H --> I[🤖 Preeclampsia Prediction Model]
-I --> J[📄 Risk Prediction Report]
+G -->|🟢 Low Risk| H[✅ Maternal Health Result]
 
-D --> K[💬 AI Chatbot]
-D --> L[📈 Analytics Dashboard]
+G -->|🔴 High Risk| I[🚨 Preeclampsia Assessment]
 
-K --> M[✨ Gemini API]
-L --> N[📊 Interactive Visualizations]
+I --> J[🤖 Preeclampsia ML Model]
+
+J --> K[⚠️ Preeclampsia Risk Result]
+
+H --> L[💡 Personalized Recommendations]
+K --> L
+
+L --> M[📄 Generate PDF Health Report]
+
+D --> N[🚨 Emergency Symptom Detection]
+
+D --> O[💬 AI Healthcare Chatbot]
+
+O --> P[✨ Gemini API]
+
+D --> Q[📈 Analytics Dashboard]
+
+Q --> R[📊 Interactive Visualizations]
 
 %% Styling
 classDef landing fill:#DBEAFE,stroke:#3B82F6,color:#1E3A8A,stroke-width:2px;
-classDef dashboard fill:#DCFCE7,stroke:#22C55E,color:#14532D,stroke-width:2px;
+classDef app fill:#DCFCE7,stroke:#22C55E,color:#14532D,stroke-width:2px;
 classDef risk fill:#FFE4E6,stroke:#F43F5E,color:#881337,stroke-width:2px;
 classDef ai fill:#F3E8FF,stroke:#A855F7,color:#4C1D95,stroke-width:2px;
 classDef report fill:#FFEDD5,stroke:#FB923C,color:#7C2D12,stroke-width:2px;
 
 class A,B,C landing;
-class D,E dashboard;
-class F,H risk;
-class I,J report;
-class K,M ai;
-class L,N dashboard;
+class D,E,F,Q,R app;
+class G,I,J,K,N risk;
+class O,P ai;
+class L,M report;
 ```
 
 ---
