@@ -30,6 +30,7 @@ MODELS_PATH = Path(__file__).parent / "models"
 # HELPER FUNCTIONS
 # ============================================================================
 
+@st.cache_data
 def load_config():
     with open(CONFIG_PATH, "r", encoding="utf-8") as f:
         return json.load(f)
@@ -367,8 +368,7 @@ steps_total    = 2
 progress_pct   = int((steps_done / steps_total) * 100)
 
 st.sidebar.markdown("---")
-st.sidebar.markdown(f"**Assessment progress** — {steps_done} of {steps_total} done")
-st.sidebar.progress(progress_pct)
+st.sidebar.markdown("**Assessment progress**")
 if maternal_done:
     st.sidebar.markdown("✅ Maternal health done")
 else:
@@ -785,12 +785,24 @@ elif menu == "👩‍⚕️ Maternal Check":
         _ts_col, _ra_col = st.columns([3, 1])
         with _ts_col:
             if st.session_state.maternal_timestamp:
-                st.markdown(f"<p style='font-size:12px;color:var(--color-text-tertiary);margin:4px 0 0;'>🕐 Assessed on {st.session_state.maternal_timestamp}</p>", unsafe_allow_html=True)
+                st.markdown(f"<span style='display:inline-flex;align-items:center;gap:5px;background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4;padding:3px 10px;border-radius:99px;font-size:12px;'>📅 {st.session_state.maternal_timestamp}</span>", unsafe_allow_html=True)
         with _ra_col:
             if st.button("🔁 Re-assess", key="maternal_reassess", help="Clear this result and re-run with different inputs"):
-                st.session_state.maternal_result = None
-                st.session_state.maternal_timestamp = None
+                st.session_state.confirm_maternal_reassess = True
                 st.rerun()
+        if st.session_state.get("confirm_maternal_reassess"):
+            st.warning("This will clear your maternal health result. Are you sure?")
+            _mr1, _mr2 = st.columns(2)
+            with _mr1:
+                if st.button("Yes, clear", key="maternal_reassess_yes", type="primary", use_container_width=True):
+                    st.session_state.maternal_result = None
+                    st.session_state.maternal_timestamp = None
+                    st.session_state.confirm_maternal_reassess = False
+                    st.rerun()
+            with _mr2:
+                if st.button("Cancel", key="maternal_reassess_no", use_container_width=True):
+                    st.session_state.confirm_maternal_reassess = False
+                    st.rerun()
 
         # ── Recommendations ─────────────────────────────────────────────────
         if "recommendations" in advice:
@@ -1126,12 +1138,24 @@ elif menu == "🫀 Preeclampsia Check":
         _ts_col2, _ra_col2 = st.columns([3, 1])
         with _ts_col2:
             if st.session_state.preeclampsia_timestamp:
-                st.markdown(f"<p style='font-size:12px;color:var(--color-text-tertiary);margin:4px 0 0;'>🕐 Assessed on {st.session_state.preeclampsia_timestamp}</p>", unsafe_allow_html=True)
+                st.markdown(f"<span style='display:inline-flex;align-items:center;gap:5px;background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4;padding:3px 10px;border-radius:99px;font-size:12px;'>📅 {st.session_state.preeclampsia_timestamp}</span>", unsafe_allow_html=True)
         with _ra_col2:
             if st.button("🔁 Re-assess", key="preeclampsia_reassess", help="Clear this result and re-run with different inputs"):
-                st.session_state.preeclampsia_result = None
-                st.session_state.preeclampsia_timestamp = None
+                st.session_state.confirm_preeclampsia_reassess = True
                 st.rerun()
+        if st.session_state.get("confirm_preeclampsia_reassess"):
+            st.warning("This will clear your preeclampsia result. Are you sure?")
+            _pr1, _pr2 = st.columns(2)
+            with _pr1:
+                if st.button("Yes, clear", key="preeclampsia_reassess_yes", type="primary", use_container_width=True):
+                    st.session_state.preeclampsia_result = None
+                    st.session_state.preeclampsia_timestamp = None
+                    st.session_state.confirm_preeclampsia_reassess = False
+                    st.rerun()
+            with _pr2:
+                if st.button("Cancel", key="preeclampsia_reassess_no", use_container_width=True):
+                    st.session_state.confirm_preeclampsia_reassess = False
+                    st.rerun()
 
         # ── Explanation ─────────────────────────────────────────────────────
         if "explanation" in advice:
@@ -1334,7 +1358,32 @@ elif menu == "💬 AI Assistant":
                     st.session_state.chat_history.append({"role": "assistant", "content": "⚠️ AI service error. Please try again."})
                 st.rerun()
 
-    st.markdown("---")
+    _chat_col1, _chat_col2 = st.columns([5, 1])
+    with _chat_col1:
+        st.markdown("---")
+    with _chat_col2:
+        st.markdown("")
+        if st.session_state.chat_history:
+            if st.button("🗑 Clear", key="clear_chat", help="Clear chat history", use_container_width=True):
+                if st.session_state.get("confirm_clear_chat"):
+                    st.session_state.chat_history = []
+                    st.session_state.confirm_clear_chat = False
+                    st.rerun()
+                else:
+                    st.session_state.confirm_clear_chat = True
+                    st.rerun()
+        if st.session_state.get("confirm_clear_chat"):
+            st.warning("Clear all chat history?")
+            _cc1, _cc2 = st.columns(2)
+            with _cc1:
+                if st.button("Yes, clear", key="confirm_yes", type="primary", use_container_width=True):
+                    st.session_state.chat_history = []
+                    st.session_state.confirm_clear_chat = False
+                    st.rerun()
+            with _cc2:
+                if st.button("Cancel", key="confirm_no", use_container_width=True):
+                    st.session_state.confirm_clear_chat = False
+                    st.rerun()
 
     for msg in st.session_state.chat_history:
         with st.chat_message(msg["role"]):
@@ -1375,7 +1424,19 @@ elif menu == "📈 Analytics":
     preeclampsia_prob = st.session_state.preeclampsia_result["probability"] if st.session_state.preeclampsia_result else None
 
     if maternal_prob is None and preeclampsia_prob is None:
-        st.warning("No assessment data available. Please complete at least one assessment first.")
+        st.markdown("""
+        <div style='background:#E1F5EE;border:1px dashed #9FE1CB;border-radius:12px;
+             padding:3rem 1.5rem;text-align:center;margin-top:1rem;'>
+            <div style='font-size:40px;margin-bottom:12px;'>📊</div>
+            <p style='font-size:16px;font-weight:500;color:#085041;margin:0 0 6px;'>No assessment data yet</p>
+            <p style='font-size:13px;color:#0F6E56;margin:0 0 18px;'>Complete at least one assessment to see analytics here</p>
+        </div>""", unsafe_allow_html=True)
+        st.markdown("")
+        _ea_c1, _ea_c2, _ea_c3 = st.columns([1,2,1])
+        with _ea_c2:
+            if st.button("▶ Begin maternal assessment", use_container_width=True, type="primary"):
+                st.session_state.menu_index = MENU_OPTIONS.index("👩\u200d⚕️ Maternal Check")
+                st.rerun()
     else:
         rows = []
         if maternal_prob is not None:
