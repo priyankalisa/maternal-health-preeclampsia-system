@@ -13,17 +13,16 @@ load_dotenv()
 
 API_KEY = os.getenv("GEMINI_API_KEY")
 
-if not API_KEY:
-    raise ValueError("GEMINI_API_KEY not found in .env file")
-
 # =========================
 # GEMINI CONFIG
 # =========================
-genai.configure(api_key=API_KEY)
-
 MODEL_NAME = "gemini-2.5-flash-lite"
 
-model = genai.GenerativeModel(MODEL_NAME)
+model = None
+
+if API_KEY:
+    genai.configure(api_key=API_KEY)
+    model = genai.GenerativeModel(MODEL_NAME)
 
 # =========================
 # EMERGENCY DETECTION
@@ -117,6 +116,9 @@ Assistant:
 """
 
     # Step 4: Gemini response
+    if not API_KEY or model is None:
+        return "⚠️ GEMINI_API_KEY is not configured. Please add it to your .env file."
+
     try:
         response = model.generate_content(prompt)
 
