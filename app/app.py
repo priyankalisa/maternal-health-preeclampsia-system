@@ -451,7 +451,6 @@ with col_quick1:
 with col_quick2:
     if st.button("📋 Step 1: Maternal Health", use_container_width=True):
         st.session_state.menu_index = MENU_OPTIONS.index("👩‍⚕️ Maternal Check")
-        st.session_state.preeclampsia_result = None
         st.rerun()
 
 with col_quick3:
@@ -817,14 +816,13 @@ elif menu == "👩‍⚕️ Maternal Check":
 
         # ── Warning Signs — only for moderate/high ──────────────────────────
         if "warning_signs" in advice and advice["range"] in ("moderate", "high"):
-            warn_icons = ["🤯","👁️","🫁","🦶","🤢","😮‍💨","👶"]
             ws_cards = "".join([
-                f"""<div style='display:flex;align-items:center;gap:10px;background:#fff0f0;
+                f"""<div style='display:flex;align-items:flex-start;gap:10px;background:#fff0f0;
                     border-radius:8px;padding:9px 13px;margin-bottom:7px;border:1px solid #ffd0d0;'>
-                    <span style='font-size:18px;flex-shrink:0;'>{warn_icons[i] if i < len(warn_icons) else '⚠️'}</span>
+                    <div style='min-width:6px;height:6px;border-radius:50%;background:#A32D2D;margin-top:5px;flex-shrink:0;'></div>
                     <p style='font-size:13px;color:#6B0000;margin:0;font-weight:450;'>{w}</p>
                 </div>"""
-                for i, w in enumerate(advice["warning_signs"])
+                for w in advice["warning_signs"]
             ])
             st.markdown(f"""
             <div style='background:linear-gradient(135deg,#FCEBEB,#fff5f5);border:1.5px solid #F7C1C1;
@@ -1146,14 +1144,14 @@ elif menu == "🫀 Preeclampsia Check":
         if "do" in advice or "dont" in advice:
             do_col, dont_col = st.columns(2)
             if "do" in advice:
-                do_items = "".join([f"<div style='display:flex;align-items:flex-start;gap:8px;margin-bottom:7px;'><div style='width:6px;height:6px;border-radius:50%;background:#3B6D11;margin-top:5px;flex-shrink:0;'></div><p style='font-size:13px;color:#27500A;margin:0;'>{d}</p></div>" for d in advice["do"]])
+                do_items = "".join([f"<div style='display:flex;align-items:flex-start;gap:8px;padding:7px 10px;background:#f0faf4;border-radius:6px;margin-bottom:5px;'><span style='color:#1a7a3c;font-size:13px;flex-shrink:0;margin-top:1px;'>✓</span><p style='font-size:13px;color:#27500A;margin:0;line-height:1.4;'>{d}</p></div>" for d in advice["do"]])
                 with do_col:
                     st.markdown(f"""<div style='background:#EAF3DE;border:0.5px solid #3B6D11;border-radius:var(--border-radius-lg);padding:1.1rem;'>
                         <p style='font-size:13px;font-weight:500;color:#173404;margin:0 0 10px;'>✅ Do</p>
                         {do_items}
                     </div>""", unsafe_allow_html=True)
             if "dont" in advice:
-                dont_items = "".join([f"<div style='display:flex;align-items:flex-start;gap:8px;margin-bottom:7px;'><div style='width:6px;height:6px;border-radius:50%;background:#A32D2D;margin-top:5px;flex-shrink:0;'></div><p style='font-size:13px;color:#791F1F;margin:0;'>{d}</p></div>" for d in advice["dont"]])
+                dont_items = "".join([f"<div style='display:flex;align-items:flex-start;gap:8px;padding:7px 10px;background:#fff4f4;border-radius:6px;margin-bottom:5px;'><span style='color:#c0392b;font-size:13px;flex-shrink:0;margin-top:1px;'>✕</span><p style='font-size:13px;color:#791F1F;margin:0;line-height:1.4;'>{d}</p></div>" for d in advice["dont"]])
                 with dont_col:
                     st.markdown(f"""<div style='background:#FCEBEB;border:0.5px solid #A32D2D;border-radius:var(--border-radius-lg);padding:1.1rem;'>
                         <p style='font-size:13px;font-weight:500;color:#501313;margin:0 0 10px;'>❌ Don't</p>
