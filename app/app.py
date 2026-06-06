@@ -308,6 +308,9 @@ if "prefill_age" not in st.session_state:
 if "prefill_gestation" not in st.session_state:
     st.session_state.prefill_gestation = 20
 
+if "_pending_rerun" not in st.session_state:
+    st.session_state._pending_rerun = False
+
 # ============================================================================
 # SIDEBAR MENU
 # ============================================================================
@@ -349,6 +352,10 @@ menu = st.sidebar.radio(
 # If user tries to navigate to Preeclampsia Check when not eligible, redirect
 if menu == "🫀 Preeclampsia Check" and not _phase2_eligible_sidebar:
     st.session_state.menu_index = MENU_OPTIONS.index("👩‍⚕️ Maternal Check")
+    st.session_state._pending_rerun = True
+
+if st.session_state._pending_rerun:
+    st.session_state._pending_rerun = False
     st.rerun()
 
 st.session_state.menu_index = MENU_OPTIONS.index(menu)
