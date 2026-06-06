@@ -795,23 +795,49 @@ elif menu == "👩‍⚕️ Maternal Check":
 
         # ── Recommendations ─────────────────────────────────────────────────
         if "recommendations" in advice:
-            st.markdown("##### 📋 Recommendations")
-            for r in advice["recommendations"]:
-                st.markdown(f"- {r}")
+            rec_cards = "".join([
+                f"""<div style='display:flex;align-items:flex-start;gap:12px;background:white;
+                    border:1px solid {bc}22;border-left:3px solid {bc};border-radius:8px;
+                    padding:10px 14px;margin-bottom:8px;'>
+                    <span style='font-size:16px;flex-shrink:0;margin-top:1px;'>{'🏥' if i==0 else '📌' if i==1 else '⚡' if i==2 else '🛏️' if i==3 else '🥗' if i==4 else '💊'}</span>
+                    <p style='font-size:13px;color:{tc};margin:0;font-weight:450;line-height:1.5;'>{r}</p>
+                </div>"""
+                for i, r in enumerate(advice["recommendations"])
+            ])
+            st.markdown(f"""
+            <div style='background:{bg};border:1px solid {bc}44;border-radius:12px;padding:1.25rem;margin:1rem 0;'>
+                <div style='display:flex;align-items:center;gap:8px;margin-bottom:14px;'>
+                    <div style='width:32px;height:32px;border-radius:8px;background:{bc};display:flex;align-items:center;justify-content:center;font-size:16px;'>📋</div>
+                    <p style='font-size:14px;font-weight:600;color:{tc};margin:0;'>Recommendations</p>
+                </div>
+                {rec_cards}
+            </div>""", unsafe_allow_html=True)
 
         st.markdown("---")
 
         # ── Warning Signs — only for moderate/high ──────────────────────────
         if "warning_signs" in advice and advice["range"] in ("moderate", "high"):
-            ws_items = "".join([
-                f"<div style='display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;'>"
-                f"<span style='color:#A32D2D;font-size:14px;flex-shrink:0;'>⚠</span>"
-                f"<p style='font-size:13px;color:#501313;margin:0;'>{w}</p></div>"
-                for w in advice["warning_signs"]
+            warn_icons = ["🤯","👁️","🫁","🦶","🤢","😮‍💨","👶"]
+            ws_cards = "".join([
+                f"""<div style='display:flex;align-items:center;gap:10px;background:#fff0f0;
+                    border-radius:8px;padding:9px 13px;margin-bottom:7px;border:1px solid #ffd0d0;'>
+                    <span style='font-size:18px;flex-shrink:0;'>{warn_icons[i] if i < len(warn_icons) else '⚠️'}</span>
+                    <p style='font-size:13px;color:#6B0000;margin:0;font-weight:450;'>{w}</p>
+                </div>"""
+                for i, w in enumerate(advice["warning_signs"])
             ])
-            st.markdown(f"""<div style='background:#FCEBEB;border:0.5px solid #F7C1C1;border-radius:10px;padding:1.1rem;margin-bottom:1rem;'>
-                <p style='font-size:13px;font-weight:600;color:#791F1F;margin:0 0 10px;'>🚨 Warning Signs — Seek Care Immediately If You Notice:</p>
-                {ws_items}
+            st.markdown(f"""
+            <div style='background:linear-gradient(135deg,#FCEBEB,#fff5f5);border:1.5px solid #F7C1C1;
+                border-radius:12px;padding:1.25rem;margin-bottom:1rem;'>
+                <div style='display:flex;align-items:center;gap:10px;margin-bottom:14px;'>
+                    <div style='width:36px;height:36px;border-radius:10px;background:#A32D2D;
+                        display:flex;align-items:center;justify-content:center;font-size:18px;'>🚨</div>
+                    <div>
+                        <p style='font-size:14px;font-weight:700;color:#791F1F;margin:0;'>Seek Care Immediately</p>
+                        <p style='font-size:11px;color:#A32D2D;margin:0;'>If you notice any of the following signs</p>
+                    </div>
+                </div>
+                {ws_cards}
             </div>""", unsafe_allow_html=True)
 
         # ── Diet & Exercise ─────────────────────────────────────────────────
@@ -819,25 +845,69 @@ elif menu == "👩‍⚕️ Maternal Check":
             diet_col, ex_col = st.columns(2)
             if "diet" in advice:
                 with diet_col:
-                    eat_items  = "".join([f"<div style='display:flex;gap:7px;margin-bottom:5px;'><span style='color:#3B6D11;'>✔</span><p style='font-size:12px;color:#27500A;margin:0;'>{i}</p></div>" for i in advice["diet"]["eat"]])
-                    avoid_items = "".join([f"<div style='display:flex;gap:7px;margin-bottom:5px;'><span style='color:#A32D2D;'>✖</span><p style='font-size:12px;color:#501313;margin:0;'>{i}</p></div>" for i in advice["diet"]["avoid"]])
-                    st.markdown(f"""<div style='background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:1.1rem;'>
-                        <p style='font-size:13px;font-weight:600;color:var(--color-text-primary);margin:0 0 10px;'>🥗 Diet Guidance</p>
-                        <p style='font-size:11px;font-weight:500;color:#3B6D11;margin:0 0 6px;text-transform:uppercase;'>Eat</p>
-                        {eat_items}
-                        <p style='font-size:11px;font-weight:500;color:#A32D2D;margin:10px 0 6px;text-transform:uppercase;'>Avoid</p>
-                        {avoid_items}
+                    eat_items = "".join([
+                        f"""<div style='display:flex;align-items:flex-start;gap:8px;padding:7px 10px;
+                            background:#f0faf4;border-radius:6px;margin-bottom:5px;'>
+                            <span style='color:#1a7a3c;font-size:13px;flex-shrink:0;margin-top:1px;'>✅</span>
+                            <p style='font-size:12px;color:#0d4a24;margin:0;line-height:1.4;'>{item}</p>
+                        </div>"""
+                        for item in advice["diet"]["eat"]
+                    ])
+                    avoid_items = "".join([
+                        f"""<div style='display:flex;align-items:flex-start;gap:8px;padding:7px 10px;
+                            background:#fff4f4;border-radius:6px;margin-bottom:5px;'>
+                            <span style='color:#c0392b;font-size:13px;flex-shrink:0;margin-top:1px;'>🚫</span>
+                            <p style='font-size:12px;color:#6B0000;margin:0;line-height:1.4;'>{item}</p>
+                        </div>"""
+                        for item in advice["diet"]["avoid"]
+                    ])
+                    st.markdown(f"""
+                    <div style='background:white;border:1px solid #d4edda;border-radius:12px;overflow:hidden;height:100%;'>
+                        <div style='background:linear-gradient(135deg,#0F6E56,#1a9e7a);padding:12px 16px;display:flex;align-items:center;gap:10px;'>
+                            <span style='font-size:22px;'>🥗</span>
+                            <p style='font-size:14px;font-weight:600;color:white;margin:0;'>Diet Guidance</p>
+                        </div>
+                        <div style='padding:14px;'>
+                            <p style='font-size:10px;font-weight:700;color:#1a7a3c;margin:0 0 8px;
+                                text-transform:uppercase;letter-spacing:0.08em;'>✦ Recommended Foods</p>
+                            {eat_items}
+                            <p style='font-size:10px;font-weight:700;color:#c0392b;margin:12px 0 8px;
+                                text-transform:uppercase;letter-spacing:0.08em;'>✦ Foods to Avoid</p>
+                            {avoid_items}
+                        </div>
                     </div>""", unsafe_allow_html=True)
             if "exercise" in advice:
                 with ex_col:
-                    rec_items  = "".join([f"<div style='display:flex;gap:7px;margin-bottom:5px;'><span style='color:#3B6D11;'>✔</span><p style='font-size:12px;color:#27500A;margin:0;'>{i}</p></div>" for i in advice["exercise"]["recommended"]])
-                    avoid_items = "".join([f"<div style='display:flex;gap:7px;margin-bottom:5px;'><span style='color:#A32D2D;'>✖</span><p style='font-size:12px;color:#501313;margin:0;'>{i}</p></div>" for i in advice["exercise"]["avoid"]])
-                    st.markdown(f"""<div style='background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:1.1rem;'>
-                        <p style='font-size:13px;font-weight:600;color:var(--color-text-primary);margin:0 0 10px;'>🏃 Exercise Guidance</p>
-                        <p style='font-size:11px;font-weight:500;color:#3B6D11;margin:0 0 6px;text-transform:uppercase;'>Recommended</p>
-                        {rec_items}
-                        <p style='font-size:11px;font-weight:500;color:#A32D2D;margin:10px 0 6px;text-transform:uppercase;'>Avoid</p>
-                        {avoid_items}
+                    rec_items = "".join([
+                        f"""<div style='display:flex;align-items:flex-start;gap:8px;padding:7px 10px;
+                            background:#f0faf4;border-radius:6px;margin-bottom:5px;'>
+                            <span style='color:#1a7a3c;font-size:13px;flex-shrink:0;margin-top:1px;'>✅</span>
+                            <p style='font-size:12px;color:#0d4a24;margin:0;line-height:1.4;'>{item}</p>
+                        </div>"""
+                        for item in advice["exercise"]["recommended"]
+                    ])
+                    avoid_items = "".join([
+                        f"""<div style='display:flex;align-items:flex-start;gap:8px;padding:7px 10px;
+                            background:#fff4f4;border-radius:6px;margin-bottom:5px;'>
+                            <span style='color:#c0392b;font-size:13px;flex-shrink:0;margin-top:1px;'>🚫</span>
+                            <p style='font-size:12px;color:#6B0000;margin:0;line-height:1.4;'>{item}</p>
+                        </div>"""
+                        for item in advice["exercise"]["avoid"]
+                    ])
+                    st.markdown(f"""
+                    <div style='background:white;border:1px solid #d4edda;border-radius:12px;overflow:hidden;height:100%;'>
+                        <div style='background:linear-gradient(135deg,#185FA5,#2980d9);padding:12px 16px;display:flex;align-items:center;gap:10px;'>
+                            <span style='font-size:22px;'>🏃</span>
+                            <p style='font-size:14px;font-weight:600;color:white;margin:0;'>Exercise Guidance</p>
+                        </div>
+                        <div style='padding:14px;'>
+                            <p style='font-size:10px;font-weight:700;color:#1a7a3c;margin:0 0 8px;
+                                text-transform:uppercase;letter-spacing:0.08em;'>✦ Recommended</p>
+                            {rec_items}
+                            <p style='font-size:10px;font-weight:700;color:#c0392b;margin:12px 0 8px;
+                                text-transform:uppercase;letter-spacing:0.08em;'>✦ Avoid</p>
+                            {avoid_items}
+                        </div>
                     </div>""", unsafe_allow_html=True)
 
         st.markdown("")
@@ -850,20 +920,32 @@ elif menu == "👩‍⚕️ Maternal Check":
                 t = advice["trimester_advice"][t_key]
                 active = t_key == trimester_key
                 with tri_tabs[t_idx]:
-                    focus_bg = bg if active else "var(--color-background-secondary)"
-                    focus_bc = bc if active else "var(--color-border-tertiary)"
-                    focus_tc = tc if active else "var(--color-text-secondary)"
-                    badge = f"<span style='background:{bg};color:{tc};border-radius:99px;padding:2px 8px;font-size:10px;font-weight:600;margin-left:8px;'>Current</span>" if active else ""
-                    dot_color = bc if active else "#9FE1CB"
+                    focus_bg = bg if active else "#f8fffe"
+                    focus_bc = bc if active else "#c8e6de"
+                    focus_tc = tc if active else "#2c5f4a"
+                    badge = f"<span style='background:{bc};color:white;border-radius:99px;padding:2px 10px;font-size:10px;font-weight:700;margin-left:8px;letter-spacing:0.04em;'>CURRENT</span>" if active else ""
                     tip_items = "".join([
-                        f"<div style='display:flex;align-items:flex-start;gap:8px;margin-bottom:7px;'>"
-                        f"<div style='width:6px;height:6px;border-radius:50%;background:{dot_color};margin-top:5px;flex-shrink:0;'></div>"
-                        f"<p style='font-size:13px;color:var(--color-text-primary);margin:0;'>{tip}</p></div>"
+                        f"""<div style='display:flex;align-items:flex-start;gap:10px;
+                            background:{'white' if active else '#f9f9f9'};border:1px solid {focus_bc};
+                            border-left:3px solid {bc if active else '#9FE1CB'};
+                            border-radius:7px;padding:9px 12px;margin-bottom:7px;'>
+                            <span style='font-size:14px;flex-shrink:0;color:{bc if active else "#9FE1CB"};margin-top:1px;'>{'◆' if active else '◇'}</span>
+                            <p style='font-size:13px;color:{"#1a3a2e" if active else "#4a6b5c"};margin:0;line-height:1.5;'>{tip}</p>
+                        </div>"""
                         for tip in t["tips"]
                     ])
-                    st.markdown(f"""<div style='background:{focus_bg};border:1px solid {focus_bc};border-radius:10px;padding:1.1rem;margin-top:8px;'>
-                        <p style='font-size:13px;font-weight:600;color:{focus_tc};margin:0 0 4px;'>{t["label"]}{badge}</p>
-                        <p style='font-size:11px;color:var(--color-text-tertiary);margin:0 0 10px;'>Focus: {t["focus"]}</p>
+                    st.markdown(f"""
+                    <div style='background:{focus_bg};border:1.5px solid {focus_bc};border-radius:12px;padding:1.25rem;margin-top:8px;'>
+                        <div style='display:flex;align-items:center;gap:10px;margin-bottom:12px;'>
+                            <div style='width:38px;height:38px;border-radius:10px;background:{"linear-gradient(135deg,"+bc+","+bc+"aa)" if active else "#e8f5ef"};
+                                display:flex;align-items:center;justify-content:center;font-size:20px;'>
+                                {'🌱' if t_key=='1' else '🌿' if t_key=='2' else '🍀'}
+                            </div>
+                            <div>
+                                <p style='font-size:14px;font-weight:600;color:{focus_tc};margin:0;'>{t["label"]}{badge}</p>
+                                <p style='font-size:11px;color:#5f8a78;margin:0;'>Focus: {t["focus"]}</p>
+                            </div>
+                        </div>
                         {tip_items}
                     </div>""", unsafe_allow_html=True)
 
@@ -1084,39 +1166,95 @@ elif menu == "🫀 Preeclampsia Check":
             diet_col, ex_col = st.columns(2)
             if "diet" in advice:
                 with diet_col:
-                    eat_items   = "".join([f"<div style='display:flex;gap:7px;margin-bottom:5px;'><span style='color:#3B6D11;'>✔</span><p style='font-size:12px;color:#27500A;margin:0;'>{i}</p></div>" for i in advice["diet"]["eat"]])
-                    avoid_items = "".join([f"<div style='display:flex;gap:7px;margin-bottom:5px;'><span style='color:#A32D2D;'>✖</span><p style='font-size:12px;color:#501313;margin:0;'>{i}</p></div>" for i in advice["diet"]["avoid"]])
-                    st.markdown(f"""<div style='background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:1.1rem;'>
-                        <p style='font-size:13px;font-weight:600;color:var(--color-text-primary);margin:0 0 10px;'>🥗 Diet Guidance</p>
-                        <p style='font-size:11px;font-weight:500;color:#3B6D11;margin:0 0 6px;text-transform:uppercase;'>Eat</p>
-                        {eat_items}
-                        <p style='font-size:11px;font-weight:500;color:#A32D2D;margin:10px 0 6px;text-transform:uppercase;'>Avoid</p>
-                        {avoid_items}
+                    eat_items = "".join([
+                        f"""<div style='display:flex;align-items:flex-start;gap:8px;padding:7px 10px;
+                            background:#f0faf4;border-radius:6px;margin-bottom:5px;'>
+                            <span style='color:#1a7a3c;font-size:13px;flex-shrink:0;margin-top:1px;'>✅</span>
+                            <p style='font-size:12px;color:#0d4a24;margin:0;line-height:1.4;'>{item}</p>
+                        </div>"""
+                        for item in advice["diet"]["eat"]
+                    ])
+                    avoid_items = "".join([
+                        f"""<div style='display:flex;align-items:flex-start;gap:8px;padding:7px 10px;
+                            background:#fff4f4;border-radius:6px;margin-bottom:5px;'>
+                            <span style='color:#c0392b;font-size:13px;flex-shrink:0;margin-top:1px;'>🚫</span>
+                            <p style='font-size:12px;color:#6B0000;margin:0;line-height:1.4;'>{item}</p>
+                        </div>"""
+                        for item in advice["diet"]["avoid"]
+                    ])
+                    st.markdown(f"""
+                    <div style='background:white;border:1px solid #d4edda;border-radius:12px;overflow:hidden;height:100%;'>
+                        <div style='background:linear-gradient(135deg,#0F6E56,#1a9e7a);padding:12px 16px;display:flex;align-items:center;gap:10px;'>
+                            <span style='font-size:22px;'>🥗</span>
+                            <p style='font-size:14px;font-weight:600;color:white;margin:0;'>Diet Guidance</p>
+                        </div>
+                        <div style='padding:14px;'>
+                            <p style='font-size:10px;font-weight:700;color:#1a7a3c;margin:0 0 8px;
+                                text-transform:uppercase;letter-spacing:0.08em;'>✦ Recommended Foods</p>
+                            {eat_items}
+                            <p style='font-size:10px;font-weight:700;color:#c0392b;margin:12px 0 8px;
+                                text-transform:uppercase;letter-spacing:0.08em;'>✦ Foods to Avoid</p>
+                            {avoid_items}
+                        </div>
                     </div>""", unsafe_allow_html=True)
             if "exercise" in advice:
                 with ex_col:
-                    rec_items   = "".join([f"<div style='display:flex;gap:7px;margin-bottom:5px;'><span style='color:#3B6D11;'>✔</span><p style='font-size:12px;color:#27500A;margin:0;'>{i}</p></div>" for i in advice["exercise"]["recommended"]])
-                    avoid_items = "".join([f"<div style='display:flex;gap:7px;margin-bottom:5px;'><span style='color:#A32D2D;'>✖</span><p style='font-size:12px;color:#501313;margin:0;'>{i}</p></div>" for i in advice["exercise"]["avoid"]])
-                    st.markdown(f"""<div style='background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:1.1rem;'>
-                        <p style='font-size:13px;font-weight:600;color:var(--color-text-primary);margin:0 0 10px;'>🏃 Exercise Guidance</p>
-                        <p style='font-size:11px;font-weight:500;color:#3B6D11;margin:0 0 6px;text-transform:uppercase;'>Recommended</p>
-                        {rec_items}
-                        <p style='font-size:11px;font-weight:500;color:#A32D2D;margin:10px 0 6px;text-transform:uppercase;'>Avoid</p>
-                        {avoid_items}
+                    rec_items = "".join([
+                        f"""<div style='display:flex;align-items:flex-start;gap:8px;padding:7px 10px;
+                            background:#f0faf4;border-radius:6px;margin-bottom:5px;'>
+                            <span style='color:#1a7a3c;font-size:13px;flex-shrink:0;margin-top:1px;'>✅</span>
+                            <p style='font-size:12px;color:#0d4a24;margin:0;line-height:1.4;'>{item}</p>
+                        </div>"""
+                        for item in advice["exercise"]["recommended"]
+                    ])
+                    avoid_items = "".join([
+                        f"""<div style='display:flex;align-items:flex-start;gap:8px;padding:7px 10px;
+                            background:#fff4f4;border-radius:6px;margin-bottom:5px;'>
+                            <span style='color:#c0392b;font-size:13px;flex-shrink:0;margin-top:1px;'>🚫</span>
+                            <p style='font-size:12px;color:#6B0000;margin:0;line-height:1.4;'>{item}</p>
+                        </div>"""
+                        for item in advice["exercise"]["avoid"]
+                    ])
+                    st.markdown(f"""
+                    <div style='background:white;border:1px solid #d4edda;border-radius:12px;overflow:hidden;height:100%;'>
+                        <div style='background:linear-gradient(135deg,#185FA5,#2980d9);padding:12px 16px;display:flex;align-items:center;gap:10px;'>
+                            <span style='font-size:22px;'>🏃</span>
+                            <p style='font-size:14px;font-weight:600;color:white;margin:0;'>Exercise Guidance</p>
+                        </div>
+                        <div style='padding:14px;'>
+                            <p style='font-size:10px;font-weight:700;color:#1a7a3c;margin:0 0 8px;
+                                text-transform:uppercase;letter-spacing:0.08em;'>✦ Recommended</p>
+                            {rec_items}
+                            <p style='font-size:10px;font-weight:700;color:#c0392b;margin:12px 0 8px;
+                                text-transform:uppercase;letter-spacing:0.08em;'>✦ Avoid</p>
+                            {avoid_items}
+                        </div>
                     </div>""", unsafe_allow_html=True)
             st.markdown("")
 
         # ── Immediate Actions ───────────────────────────────────────────────
         if "immediate_actions" in advice:
             ia_items = "".join([
-                f"<div style='display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;'>"
-                f"<div style='min-width:20px;height:20px;border-radius:50%;background:#A32D2D;color:white;"
-                f"font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;'>{i}</div>"
-                f"<p style='font-size:13px;color:#501313;margin:0;'>{a}</p></div>"
+                f"""<div style='display:flex;align-items:flex-start;gap:12px;background:#fff0f0;
+                    border-radius:8px;padding:10px 14px;margin-bottom:8px;border:1px solid #ffd0d0;'>
+                    <div style='min-width:26px;height:26px;border-radius:50%;background:#A32D2D;color:white;
+                        font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;
+                        flex-shrink:0;'>{i}</div>
+                    <p style='font-size:13px;color:#6B0000;margin:0;line-height:1.5;font-weight:450;'>{a}</p>
+                </div>"""
                 for i, a in enumerate(advice["immediate_actions"], 1)
             ])
-            st.markdown(f"""<div style='background:#FCEBEB;border:1px solid #F7C1C1;border-radius:10px;padding:1.1rem;margin-bottom:1rem;'>
-                <p style='font-size:13px;font-weight:600;color:#791F1F;margin:0 0 12px;'>🚨 Immediate Actions Required</p>
+            st.markdown(f"""
+            <div style='background:linear-gradient(135deg,#FCEBEB,#fff5f5);border:1.5px solid #F7C1C1;
+                border-radius:12px;padding:1.25rem;margin-bottom:1rem;'>
+                <div style='display:flex;align-items:center;gap:10px;margin-bottom:14px;'>
+                    <div style='width:36px;height:36px;border-radius:10px;background:#A32D2D;
+                        display:flex;align-items:center;justify-content:center;font-size:18px;'>🚨</div>
+                    <div>
+                        <p style='font-size:14px;font-weight:700;color:#791F1F;margin:0;'>Immediate Actions Required</p>
+                        <p style='font-size:11px;color:#A32D2D;margin:0;'>Take these steps without delay</p>
+                    </div>
+                </div>
                 {ia_items}
             </div>""", unsafe_allow_html=True)
 
@@ -1128,20 +1266,32 @@ elif menu == "🫀 Preeclampsia Check":
                 t = advice["trimester_advice"][t_key]
                 active = t_key == trimester_key
                 with tri_tabs[t_idx]:
-                    badge = f"<span style='background:{bg};color:{tc};border-radius:99px;padding:2px 8px;font-size:10px;font-weight:600;margin-left:8px;'>Current</span>" if active else ""
-                    dot_color = bc if active else "#9FE1CB"
+                    focus_bg = bg if active else "#f8fffe"
+                    focus_bc = bc if active else "#c8e6de"
+                    focus_tc = tc if active else "#2c5f4a"
+                    badge = f"<span style='background:{bc};color:white;border-radius:99px;padding:2px 10px;font-size:10px;font-weight:700;margin-left:8px;letter-spacing:0.04em;'>CURRENT</span>" if active else ""
                     tip_items = "".join([
-                        f"<div style='display:flex;align-items:flex-start;gap:8px;margin-bottom:7px;'>"
-                        f"<div style='width:6px;height:6px;border-radius:50%;background:{dot_color};margin-top:5px;flex-shrink:0;'></div>"
-                        f"<p style='font-size:13px;color:var(--color-text-primary);margin:0;'>{tip}</p></div>"
+                        f"""<div style='display:flex;align-items:flex-start;gap:10px;
+                            background:{'white' if active else '#f9f9f9'};border:1px solid {focus_bc};
+                            border-left:3px solid {bc if active else '#9FE1CB'};
+                            border-radius:7px;padding:9px 12px;margin-bottom:7px;'>
+                            <span style='font-size:14px;flex-shrink:0;color:{bc if active else "#9FE1CB"};margin-top:1px;'>{'◆' if active else '◇'}</span>
+                            <p style='font-size:13px;color:{"#1a3a2e" if active else "#4a6b5c"};margin:0;line-height:1.5;'>{tip}</p>
+                        </div>"""
                         for tip in t["tips"]
                     ])
-                    focus_bg = bg if active else "var(--color-background-secondary)"
-                    focus_bc = bc if active else "var(--color-border-tertiary)"
-                    focus_tc = tc if active else "var(--color-text-secondary)"
-                    st.markdown(f"""<div style='background:{focus_bg};border:1px solid {focus_bc};border-radius:10px;padding:1.1rem;margin-top:8px;'>
-                        <p style='font-size:13px;font-weight:600;color:{focus_tc};margin:0 0 4px;'>{t["label"]}{badge}</p>
-                        <p style='font-size:11px;color:var(--color-text-tertiary);margin:0 0 10px;'>Focus: {t["focus"]}</p>
+                    st.markdown(f"""
+                    <div style='background:{focus_bg};border:1.5px solid {focus_bc};border-radius:12px;padding:1.25rem;margin-top:8px;'>
+                        <div style='display:flex;align-items:center;gap:10px;margin-bottom:12px;'>
+                            <div style='width:38px;height:38px;border-radius:10px;background:{"linear-gradient(135deg,"+bc+","+bc+"aa)" if active else "#e8f5ef"};
+                                display:flex;align-items:center;justify-content:center;font-size:20px;'>
+                                {'🌱' if t_key=='1' else '🌿' if t_key=='2' else '🍀'}
+                            </div>
+                            <div>
+                                <p style='font-size:14px;font-weight:600;color:{focus_tc};margin:0;'>{t["label"]}{badge}</p>
+                                <p style='font-size:11px;color:#5f8a78;margin:0;'>Focus: {t["focus"]}</p>
+                            </div>
+                        </div>
                         {tip_items}
                     </div>""", unsafe_allow_html=True)
 
