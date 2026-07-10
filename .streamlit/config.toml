@@ -2,3 +2,10 @@
 enableStaticServing = true
 port = 80
 headless = true
+
+[theme]
+base = "light"
+primaryColor = "#0F6E56"
+backgroundColor = "#F4FCF8"
+secondaryBackgroundColor = "#E1F5EE"
+textColor = "#04342C"
