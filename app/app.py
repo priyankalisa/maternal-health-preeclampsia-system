@@ -17,6 +17,7 @@ import joblib
 import plotly.graph_objects as go
 from pathlib import Path
 import datetime
+from zoneinfo import ZoneInfo
 
 from chatbot import get_chatbot_response, check_medical_emergency
 
@@ -25,6 +26,13 @@ from chatbot import get_chatbot_response, check_medical_emergency
 # ============================================================================
 CONFIG_PATH = Path(__file__).parent / "doctor_advice.json"
 MODELS_PATH = Path(__file__).parent / "models"
+
+# Timezone used for all "assessed on" timestamps shown to the user (IST)
+IST = ZoneInfo("Asia/Kolkata")
+
+def now_ist():
+    """Return the current datetime in Indian Standard Time (Asia/Kolkata)."""
+    return datetime.datetime.now(IST)
 
 # ============================================================================
 # HELPER FUNCTIONS
@@ -143,7 +151,7 @@ def generate_report_html(maternal_result, preeclampsia_result, maternal_ts, pree
         elif p < 70: return "Moderate Risk", "#633806", "#FAEEDA", "⚠️"
         else:        return "High Risk",  "#791F1F", "#FCEBEB", "🚨"
 
-    today = _dt.date.today().strftime("%-d %B %Y")
+    today = now_ist().date().strftime("%-d %B %Y")
 
     sections = []
 
@@ -404,7 +412,7 @@ maternal_done_hdr  = st.session_state.maternal_result is not None
 preclamp_done_hdr  = st.session_state.preeclampsia_result is not None
 steps_done_hdr     = int(maternal_done_hdr) + int(preclamp_done_hdr)
 
-today_str = datetime.date.today().strftime("%B %Y")
+today_str = now_ist().date().strftime("%B %Y")
 
 st.markdown(f"""
 <div style='background:var(--color-background-secondary);border-radius:var(--border-radius-lg);
@@ -730,7 +738,7 @@ elif menu == "👩‍⚕️ Maternal Check":
             model = load_model("maternal_health_model")
             prob  = model.predict_proba(maternal_data)[0][1] * 100
             st.session_state.maternal_result = {"probability": prob, "gestation": gestation}
-            st.session_state.maternal_timestamp = datetime.datetime.now().strftime("%-d %B %Y at %-I:%M %p")
+            st.session_state.maternal_timestamp = now_ist().strftime("%-d %B %Y at %-I:%M %p")
             # Store shared fields so Step 2 can pre-fill them without re-entry
             st.session_state.prefill_age = age
             st.session_state.prefill_gestation = gestation
@@ -1087,7 +1095,7 @@ elif menu == "🫀 Preeclampsia Check":
             model = load_model("preeclampsia_model")
             prob  = model.predict_proba(preeclampsia_data)[0][1] * 100
             st.session_state.preeclampsia_result = {"probability": prob, "gestation": gestational_age}
-            st.session_state.preeclampsia_timestamp = datetime.datetime.now().strftime("%-d %B %Y at %-I:%M %p")
+            st.session_state.preeclampsia_timestamp = now_ist().strftime("%-d %B %Y at %-I:%M %p")
             st.rerun()
 
     if st.session_state.preeclampsia_result:
